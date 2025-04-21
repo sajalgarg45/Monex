@@ -1,0 +1,563 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		04E896212DB68EC000CFEDA8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04E8960B2DB68EBE00CFEDA8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 04E896122DB68EBE00CFEDA8;
+			remoteInfo = "Finance-Assistant";
+		};
+		04E8962B2DB68EC000CFEDA8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 04E8960B2DB68EBE00CFEDA8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 04E896122DB68EBE00CFEDA8;
+			remoteInfo = "Finance-Assistant";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		04E896132DB68EBE00CFEDA8 /* Finance-Assistant.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Finance-Assistant.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04E896202DB68EC000CFEDA8 /* Finance-AssistantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Finance-AssistantTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		04E8962A2DB68EC000CFEDA8 /* Finance-AssistantUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Finance-AssistantUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		04E896152DB68EBE00CFEDA8 /* Finance-Assistant */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Finance-Assistant";
+			sourceTree = "<group>";
+		};
+		04E896232DB68EC000CFEDA8 /* Finance-AssistantTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Finance-AssistantTests";
+			sourceTree = "<group>";
+		};
+		04E8962D2DB68EC000CFEDA8 /* Finance-AssistantUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Finance-AssistantUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		04E896102DB68EBE00CFEDA8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04E8961D2DB68EC000CFEDA8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04E896272DB68EC000CFEDA8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		04E8960A2DB68EBE00CFEDA8 = {
+			isa = PBXGroup;
+			children = (
+				04E896152DB68EBE00CFEDA8 /* Finance-Assistant */,
+				04E896232DB68EC000CFEDA8 /* Finance-AssistantTests */,
+				04E8962D2DB68EC000CFEDA8 /* Finance-AssistantUITests */,
+				04E896142DB68EBE00CFEDA8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		04E896142DB68EBE00CFEDA8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				04E896132DB68EBE00CFEDA8 /* Finance-Assistant.app */,
+				04E896202DB68EC000CFEDA8 /* Finance-AssistantTests.xctest */,
+				04E8962A2DB68EC000CFEDA8 /* Finance-AssistantUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		04E896122DB68EBE00CFEDA8 /* Finance-Assistant */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04E896342DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-Assistant" */;
+			buildPhases = (
+				04E8960F2DB68EBE00CFEDA8 /* Sources */,
+				04E896102DB68EBE00CFEDA8 /* Frameworks */,
+				04E896112DB68EBE00CFEDA8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				04E896152DB68EBE00CFEDA8 /* Finance-Assistant */,
+			);
+			name = "Finance-Assistant";
+			packageProductDependencies = (
+			);
+			productName = "Finance-Assistant";
+			productReference = 04E896132DB68EBE00CFEDA8 /* Finance-Assistant.app */;
+			productType = "com.apple.product-type.application";
+		};
+		04E8961F2DB68EC000CFEDA8 /* Finance-AssistantTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04E896372DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-AssistantTests" */;
+			buildPhases = (
+				04E8961C2DB68EC000CFEDA8 /* Sources */,
+				04E8961D2DB68EC000CFEDA8 /* Frameworks */,
+				04E8961E2DB68EC000CFEDA8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				04E896222DB68EC000CFEDA8 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				04E896232DB68EC000CFEDA8 /* Finance-AssistantTests */,
+			);
+			name = "Finance-AssistantTests";
+			packageProductDependencies = (
+			);
+			productName = "Finance-AssistantTests";
+			productReference = 04E896202DB68EC000CFEDA8 /* Finance-AssistantTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		04E896292DB68EC000CFEDA8 /* Finance-AssistantUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04E8963A2DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-AssistantUITests" */;
+			buildPhases = (
+				04E896262DB68EC000CFEDA8 /* Sources */,
+				04E896272DB68EC000CFEDA8 /* Frameworks */,
+				04E896282DB68EC000CFEDA8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				04E8962C2DB68EC000CFEDA8 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				04E8962D2DB68EC000CFEDA8 /* Finance-AssistantUITests */,
+			);
+			name = "Finance-AssistantUITests";
+			packageProductDependencies = (
+			);
+			productName = "Finance-AssistantUITests";
+			productReference = 04E8962A2DB68EC000CFEDA8 /* Finance-AssistantUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		04E8960B2DB68EBE00CFEDA8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					04E896122DB68EBE00CFEDA8 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					04E8961F2DB68EC000CFEDA8 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 04E896122DB68EBE00CFEDA8;
+					};
+					04E896292DB68EC000CFEDA8 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 04E896122DB68EBE00CFEDA8;
+					};
+				};
+			};
+			buildConfigurationList = 04E8960E2DB68EBE00CFEDA8 /* Build configuration list for PBXProject "Finance-Assistant" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 04E8960A2DB68EBE00CFEDA8;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 04E896142DB68EBE00CFEDA8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				04E896122DB68EBE00CFEDA8 /* Finance-Assistant */,
+				04E8961F2DB68EC000CFEDA8 /* Finance-AssistantTests */,
+				04E896292DB68EC000CFEDA8 /* Finance-AssistantUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		04E896112DB68EBE00CFEDA8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04E8961E2DB68EC000CFEDA8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04E896282DB68EC000CFEDA8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		04E8960F2DB68EBE00CFEDA8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04E8961C2DB68EC000CFEDA8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		04E896262DB68EC000CFEDA8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		04E896222DB68EC000CFEDA8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 04E896122DB68EBE00CFEDA8 /* Finance-Assistant */;
+			targetProxy = 04E896212DB68EC000CFEDA8 /* PBXContainerItemProxy */;
+		};
+		04E8962C2DB68EC000CFEDA8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 04E896122DB68EBE00CFEDA8 /* Finance-Assistant */;
+			targetProxy = 04E8962B2DB68EC000CFEDA8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		04E896322DB68EC000CFEDA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = TQ9BZ42XJ3;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		04E896332DB68EC000CFEDA8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = TQ9BZ42XJ3;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		04E896352DB68EC000CFEDA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TQ9BZ42XJ3;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Sajal-Garg.Finance-Assistant";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		04E896362DB68EC000CFEDA8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TQ9BZ42XJ3;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Sajal-Garg.Finance-Assistant";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		04E896382DB68EC000CFEDA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TQ9BZ42XJ3;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Sajal-Garg.Finance-AssistantTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Finance-Assistant.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Finance-Assistant";
+			};
+			name = Debug;
+		};
+		04E896392DB68EC000CFEDA8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TQ9BZ42XJ3;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Sajal-Garg.Finance-AssistantTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Finance-Assistant.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Finance-Assistant";
+			};
+			name = Release;
+		};
+		04E8963B2DB68EC000CFEDA8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TQ9BZ42XJ3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Sajal-Garg.Finance-AssistantUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Finance-Assistant";
+			};
+			name = Debug;
+		};
+		04E8963C2DB68EC000CFEDA8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = TQ9BZ42XJ3;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Sajal-Garg.Finance-AssistantUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Finance-Assistant";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		04E8960E2DB68EBE00CFEDA8 /* Build configuration list for PBXProject "Finance-Assistant" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04E896322DB68EC000CFEDA8 /* Debug */,
+				04E896332DB68EC000CFEDA8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		04E896342DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-Assistant" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04E896352DB68EC000CFEDA8 /* Debug */,
+				04E896362DB68EC000CFEDA8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		04E896372DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-AssistantTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04E896382DB68EC000CFEDA8 /* Debug */,
+				04E896392DB68EC000CFEDA8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		04E8963A2DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-AssistantUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04E8963B2DB68EC000CFEDA8 /* Debug */,
+				04E8963C2DB68EC000CFEDA8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 04E8960B2DB68EBE00CFEDA8 /* Project object */;
+}
