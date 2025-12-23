@@ -26,45 +26,6 @@ struct ProfileView: View {
                     }
                     .padding(.bottom, 10)
                     
-                    // Stats Section
-                    VStack(alignment: .leading, spacing: 15) {
-                        Text("Account Summary")
-                            .font(.headline)
-                            .padding(.leading)
-                        
-                        HStack(spacing: 16) {
-                            ProfileStatCard(
-                                title: "Budgets",
-                                value: "\(viewModel.budgets.count)",
-                                iconName: "folder.fill",
-                                color: .blue
-                            )
-                            
-                            ProfileStatCard(
-                                title: "Total Tracking",
-                                value: "₹\(viewModel.totalBudget)",
-                                iconName: "banknote.fill",
-                                color: .green
-                            )
-                        }
-                        
-                        HStack(spacing: 16) {
-                            ProfileStatCard(
-                                title: "Total Spent",
-                                value: "₹\(viewModel.totalSpent)",
-                                iconName: "arrow.down.circle.fill",
-                                color: .red
-                            )
-                            
-                            ProfileStatCard(
-                                title: "Total Saved",
-                                value: "₹\(viewModel.totalRemaining)",
-                                iconName: "arrow.up.circle.fill",
-                                color: .purple
-                            )
-                        }
-                    }
-                    
                     // Settings Section
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Settings")
@@ -117,27 +78,19 @@ struct ProfileView: View {
                                 .padding(.vertical, 15)
                                 .padding(.horizontal)
                             }
-                            .background(Color.white)
+                            .background(Color(UIColor.secondarySystemGroupedBackground))
                         }
-                        .background(Color.white)
+                        .background(Color(UIColor.secondarySystemGroupedBackground))
                         .cornerRadius(12)
                         .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
                     }
                 }
                 .padding()
+                .padding(.bottom, 80)
                 .navigationTitle("Profile")
                 .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button {
-                            presentationMode.wrappedValue.dismiss()
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
             }
+            .background(Color(UIColor.systemGroupedBackground))
         }
     }
 }
@@ -165,7 +118,7 @@ struct ProfileStatCard: View {
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white)
+        .background(Color(UIColor.secondarySystemGroupedBackground))
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
@@ -196,7 +149,7 @@ struct ProfileMenuRow: View {
             .padding(.vertical, 15)
             .padding(.horizontal)
         }
-        .background(Color.white)
+        .background(Color(UIColor.secondarySystemGroupedBackground))
         Divider()
             .padding(.leading, 56)
     }
