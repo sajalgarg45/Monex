@@ -6,12 +6,11 @@ struct AddBudgetView: View {
     
     @State private var name = ""
     @State private var amount = ""
-    @State private var icon = "banknote.fill"
+    @State private var icon = "cart.fill"
     @State private var color = "blue"
-    @State private var emoji = ""
     
-    private let icons = ["banknote.fill", "cart.fill", "house.fill", "car.fill", "creditcard.fill", "gift.fill", "book.fill", "medical.thermometer.fill", "wifi", "bus.fill", "airplane", "tram.fill"]
-    private let colors = ["blue", "red", "green", "orange", "purple", "yellow"]
+    private let icons = ["cart.fill", "fork.knife", "house.fill", "creditcard.fill", "airplane", "heart.fill", "book.fill", "dollarsign.circle.fill"]
+    private let colors = ["blue", "red", "green", "orange", "purple", "yellow", "pink", "indigo"]
     
     private var isFormValid: Bool {
         !name.isEmpty && !amount.isEmpty && Double(amount) ?? 0 > 0
@@ -28,45 +27,13 @@ struct AddBudgetView: View {
                 }
                 
                 Section(header: Text("Icon")) {
-                    VStack(spacing: 10) {
-                        // Preview of selected icon or emoji
-                        if !emoji.isEmpty {
-                            Text(emoji)
-                                .font(.system(size: 40))
-                                .frame(width: 60, height: 60)
-                                .background(Color.gray.opacity(0.15))
-                                .cornerRadius(12)
-                        } else {
-                            Image(systemName: icon)
-                                .font(.system(size: 40))
-                                .frame(width: 60, height: 60)
-                                .background(Color.gray.opacity(0.15))
-                                .cornerRadius(12)
-                        }
-                        // Emoji input
-                        TextField("Or enter emoji (e.g. 🛒)", text: $emoji)
-                            .font(.title2)
-                            .multilineTextAlignment(.center)
-                            .frame(width: 80)
-                            .disableAutocorrection(true)
-                            .textInputAutocapitalization(.never)
-                            .onChange(of: emoji) { _ in
-                                // When emoji is entered, we don't need to clear icon
-                                // The logic will handle this in the preview and save
-                            }
-                        Text("Choose an SF Symbol below or enter an emoji above")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding(.bottom, 8)
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))], spacing: 15) {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
                         ForEach(icons, id: \.self) { iconName in
                             IconButton(
                                 iconName: iconName,
-                                isSelected: icon == iconName && emoji.isEmpty,
+                                isSelected: icon == iconName,
                                 onTap: {
                                     icon = iconName
-                                    emoji = "" // Clear emoji when icon is selected
                                 },
                                 color: color
                             )
@@ -76,7 +43,7 @@ struct AddBudgetView: View {
                 }
                 
                 Section(header: Text("Color")) {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))], spacing: 15) {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 15) {
                         ForEach(colors, id: \.self) { colorName in
                             ColorButton(
                                 colorName: colorName,
@@ -98,22 +65,17 @@ struct AddBudgetView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
+                    Button("Save") {
                         if let amountValue = Double(amount) {
-                            let chosenIcon = !emoji.isEmpty ? emoji : icon
                             let newBudget = Budget(
                                 name: name,
                                 amount: amountValue,
-                                icon: chosenIcon,
+                                icon: icon,
                                 color: color
                             )
                             viewModel.addBudget(newBudget)
                             presentationMode.wrappedValue.dismiss()
                         }
-                    } label: {
-                        Text("Save")
-                            .fontWeight(.semibold)
-                            .primaryButton(color: .blue)
                     }
                     .disabled(!isFormValid)
                 }
@@ -166,28 +128,27 @@ struct ColorButton: View {
         case "orange": return .orange
         case "purple": return .purple
         case "yellow": return .yellow
+        case "pink": return .pink
+        case "indigo": return .indigo
         default: return .blue
         }
     }
     
     var body: some View {
         Button(action: onTap) {
-            Circle()
-                .fill(getColor())
-                .frame(width: 50, height: 50)
-                .overlay(
-                    Circle()
-                        .strokeBorder(isSelected ? .white : Color.clear, lineWidth: 3)
-                        .padding(4)
-                        .background(
-                            Circle()
-                                .fill(isSelected ? getColor().opacity(0.3) : Color.clear)
-                                .padding(2)
-                        )
-                )
-                .shadow(color: isSelected ? getColor() : Color.clear, radius: 5)
+            ZStack {
+                Circle()
+                    .fill(getColor())
+                    .frame(width: 50, height: 50)
+                
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(.white)
+                }
+            }
         }
-        .buttonStyle(PlainButtonStyle()) // Add this to prevent default button behavior
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

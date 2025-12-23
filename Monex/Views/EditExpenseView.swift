@@ -55,7 +55,7 @@ struct EditExpenseView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
+                    Button("Save") {
                         if let amountValue = Double(amount) {
                             if let index = budget.expenses.firstIndex(where: { $0.id == expense.id }) {
                                 // Create updated expense
@@ -74,10 +74,6 @@ struct EditExpenseView: View {
                                 presentationMode.wrappedValue.dismiss()
                             }
                         }
-                    } label: {
-                        Text("Save")
-                            .fontWeight(.semibold)
-                            .primaryButton(color: .green)
                     }
                     .disabled(!isFormValid)
                 }

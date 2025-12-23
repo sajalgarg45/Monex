@@ -10,8 +10,8 @@ struct EditBudgetView: View {
     @State private var icon: String
     @State private var color: String
     
-    private let icons = ["banknote.fill", "cart.fill", "house.fill", "car.fill", "creditcard.fill", "gift.fill", "book.fill", "medical.thermometer.fill", "wifi", "bus.fill", "airplane", "tram.fill"]
-    private let colors = ["blue", "red", "green", "orange", "purple", "yellow"]
+    private let icons = ["cart.fill", "fork.knife", "house.fill", "creditcard.fill", "airplane", "heart.fill", "book.fill", "dollarsign.circle.fill"]
+    private let colors = ["blue", "red", "green", "orange", "purple", "yellow", "pink", "indigo"]
     
     init(viewModel: BudgetViewModel, budget: Binding<Budget>) {
         self.viewModel = viewModel
@@ -39,7 +39,7 @@ struct EditBudgetView: View {
                 }
                 
                 Section(header: Text("Icon")) {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))], spacing: 15) {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 15) {
                         ForEach(icons, id: \.self) { iconName in
                             IconButton(
                                 iconName: iconName,
@@ -53,7 +53,7 @@ struct EditBudgetView: View {
                 }
                 
                 Section(header: Text("Color")) {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))], spacing: 15) {
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 15) {
                         ForEach(colors, id: \.self) { colorName in
                             ColorButton(
                                 colorName: colorName,
@@ -75,7 +75,7 @@ struct EditBudgetView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
+                    Button("Save") {
                         if let amountValue = Double(amount) {
                             var updatedBudget = budget
                             updatedBudget.name = name
@@ -87,10 +87,6 @@ struct EditBudgetView: View {
                             budget = updatedBudget
                             presentationMode.wrappedValue.dismiss()
                         }
-                    } label: {
-                        Text("Save")
-                            .fontWeight(.semibold)
-                            .primaryButton(color: .blue)
                     }
                     .disabled(!isFormValid)
                 }
