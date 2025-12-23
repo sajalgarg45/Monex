@@ -41,7 +41,7 @@ struct AddExpenseView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
+                    Button {
                         if let amountValue = Double(amount) {
                             let newExpense = Expense(
                                 title: title,
@@ -58,6 +58,10 @@ struct AddExpenseView: View {
                             
                             presentationMode.wrappedValue.dismiss()
                         }
+                    } label: {
+                        Text("Save")
+                            .fontWeight(.semibold)
+                            .primaryButton(color: .green)
                     }
                     .disabled(!isFormValid)
                 }

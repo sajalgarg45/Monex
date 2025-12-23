@@ -10,9 +10,12 @@ struct MainTabView: View {
             // Dashboard tab
             NavigationView {
                 ZStack {
-                    // Subtle background gradient
+                    // Background gradient
                     LinearGradient(
-                        gradient: Gradient(colors: [Color(UIColor.systemBackground), Color(UIColor.systemBackground).opacity(0.95)]),
+                        gradient: Gradient(colors: [
+                            Color(UIColor.systemGroupedBackground),
+                            Color(UIColor.systemGroupedBackground).opacity(0.8)
+                        ]),
                         startPoint: .top,
                         endPoint: .bottom
                     )
@@ -50,20 +53,33 @@ struct MainTabView: View {
         }
         .accentColor(.blue)
         .onAppear {
-            // Style the tab bar with a subtle shadow
+            // Style the tab bar with glass effect and increased height
             let appearance = UITabBarAppearance()
             appearance.configureWithTransparentBackground()
-            appearance.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.9)
+            appearance.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.85)
             
-            // Add shadow
-            appearance.shadowColor = UIColor.black.withAlphaComponent(0.1)
+            // Add shadow and blur
+            appearance.shadowColor = UIColor.black.withAlphaComponent(0.15)
             
-            // Customize selected item appearance
+            // Customize selected item appearance with larger icons
             let itemAppearance = UITabBarItemAppearance()
-            itemAppearance.normal.iconColor = .gray
-            itemAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor.gray]
+            
+            // Increase icon size
+            itemAppearance.normal.iconColor = .systemGray
+            itemAppearance.normal.titleTextAttributes = [
+                .foregroundColor: UIColor.systemGray,
+                .font: UIFont.systemFont(ofSize: 11, weight: .medium)
+            ]
+            
             itemAppearance.selected.iconColor = UIColor.systemBlue
-            itemAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor.systemBlue]
+            itemAppearance.selected.titleTextAttributes = [
+                .foregroundColor: UIColor.systemBlue,
+                .font: UIFont.systemFont(ofSize: 11, weight: .semibold)
+            ]
+            
+            // Apply larger size transform
+            itemAppearance.normal.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 2)
+            itemAppearance.selected.titlePositionAdjustment = UIOffset(horizontal: 0, vertical: 2)
             
             appearance.stackedLayoutAppearance = itemAppearance
             appearance.inlineLayoutAppearance = itemAppearance
@@ -73,6 +89,16 @@ struct MainTabView: View {
             if #available(iOS 15.0, *) {
                 UITabBar.appearance().scrollEdgeAppearance = appearance
             }
+            
+            // Increase tab bar height
+            UITabBar.appearance().layer.masksToBounds = false
+            UITabBar.appearance().layer.shadowColor = UIColor.black.cgColor
+            UITabBar.appearance().layer.shadowOpacity = 0.1
+            UITabBar.appearance().layer.shadowOffset = CGSize(width: 0, height: -3)
+            UITabBar.appearance().layer.shadowRadius = 12
+        }
+        .safeAreaInset(edge: .bottom) {
+            Color.clear.frame(height: 10)
         }
     }
     
@@ -108,7 +134,6 @@ struct DashboardContentView: View {
                 
                 // Spending Chart
                 SpendingChartView(budgets: viewModel.budgets)
-                    .frame(height: 320)
                     .padding(.vertical, 4)
                 
                 // Budgets Section
@@ -122,13 +147,15 @@ struct DashboardContentView: View {
                     Button {
                         showingAddBudget = true
                     } label: {
-                        Label("Add", systemImage: "plus.circle.fill")
-                            .font(.subheadline)
-                            .foregroundColor(.blue)
+                        HStack(spacing: 6) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 14, weight: .semibold))
+                            Text("Add")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                        }
+                        .primaryButton(color: .blue)
                     }
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.capsule)
-                    .tint(.blue.opacity(0.2))
                 }
                 .padding(.top, 8)
                 
@@ -152,7 +179,16 @@ struct DashboardContentView: View {
                 AddBudgetView(viewModel: viewModel)
             }
         }
-        .background(Color(UIColor.systemGroupedBackground).opacity(0.5))
+        .background(
+            LinearGradient(
+                colors: [
+                    Color(UIColor.systemGroupedBackground),
+                    Color(UIColor.systemGroupedBackground).opacity(0.8)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+        )
     }
     
     // Helper to get binding for a budget

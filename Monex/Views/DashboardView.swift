@@ -89,73 +89,116 @@ struct SummaryCard: View {
     let iconName: String
     let color: Color
     var isCount: Bool = false
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 12) {
                 ZStack {
                     Circle()
-                        .fill(color.opacity(0.15))
-                        .frame(width: 40, height: 40)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    color.opacity(colorScheme == .dark ? 0.3 : 0.2),
+                                    color.opacity(colorScheme == .dark ? 0.15 : 0.1)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 44, height: 44)
                     
                     Image(systemName: iconName)
-                        .font(.system(size: 20))
+                        .font(.system(size: 20, weight: .semibold))
                         .foregroundStyle(color)
                 }
                 
                 Text(title)
                     .font(.subheadline)
+                    .fontWeight(.medium)
                     .foregroundColor(.secondary)
             }
             
             if isCount {
                 Text("\(Int(value))")
-                    .font(.title2)
+                    .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
             } else {
                 Text("₹\(value, specifier: "%.0f")")
-                    .font(.title2)
+                    .font(.title)
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
             }
         }
-        .padding()
+        .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(UIColor.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
+        .cardStyle()
     }
 }
 
 struct SpendingChartView: View {
     let budgets: [Budget]
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Spending Breakdown")
                 .font(.headline)
+                .fontWeight(.semibold)
             
             if #available(iOS 16.0, *) {
-                Chart {
-                    ForEach(budgets) { budget in
-                        SectorMark(
-                            angle: .value("Amount", budget.amount - budget.remainingAmount > 0 ? budget.amount - budget.remainingAmount : 0.1),
-                            innerRadius: .ratio(0.618),
-                            angularInset: 1.5
-                        )
-                        .foregroundStyle(budget.getColor())
-                        .cornerRadius(5)
-                        .annotation(position: .overlay) {
-                            Text(budget.name)
-                                .font(.caption)
-                                .foregroundColor(.white)
-                                .fixedSize()
-                                .opacity(budget.spentPercentage > 0.1 ? 1 : 0)
+                if budgets.filter({ $0.amount - $0.remainingAmount > 0 }).isEmpty {
+                    // Empty state
+                    VStack(spacing: 12) {
+                        Image(systemName: "chart.pie.fill")
+                            .font(.system(size: 50))
+                            .foregroundColor(.secondary.opacity(0.3))
+                        
+                        Text("No spending data yet")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 180)
+                } else {
+                    Chart {
+                        ForEach(budgets.filter({ $0.amount - $0.remainingAmount > 0 })) { budget in
+                            SectorMark(
+                                angle: .value("Amount", budget.amount - budget.remainingAmount),
+                                innerRadius: .ratio(0.65),
+                                angularInset: 2
+                            )
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [
+                                        budget.getColor(),
+                                        budget.getColor().opacity(0.7)
+                                    ],
+                                    startPoint: .topLeading,
+                                    endPoint: .bottomTrailing
+                                )
+                            )
+                            .cornerRadius(4)
+                        }
+                    }
+                    .frame(height: 180)
+                    .chartBackground { chartProxy in
+                        GeometryReader { geometry in
+                            let frame = geometry[chartProxy.plotAreaFrame]
+                            VStack(spacing: 4) {
+                                Text("Total")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Text("₹\(budgets.reduce(0) { $0 + ($1.amount - $1.remainingAmount) }, specifier: "%.0f")")
+                                    .font(.title3)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.primary)
+                            }
+                            .position(x: frame.midX, y: frame.midY)
                         }
                     }
                 }
-                .frame(height: 150)
             } else {
                 // Fallback for iOS versions earlier than 16
                 Text("Chart requires iOS 16 or later")
@@ -163,123 +206,176 @@ struct SpendingChartView: View {
             }
             
             // Legend
-            VStack(alignment: .leading, spacing: 10) {
-                ForEach(budgets) { budget in
-                    HStack(spacing: 10) {
-                        Circle()
-                            .fill(budget.getColor())
-                            .frame(width: 12, height: 12)
-                        
-                        Text(budget.name)
-                            .font(.callout)
-                            .foregroundColor(.primary)
-                        
-                        Spacer()
-                        
-                        Text("₹\(budget.amount - budget.remainingAmount, specifier: "%.0f")")
-                            .font(.callout)
-                            .fontWeight(.medium)
-                            .foregroundColor(.secondary)
+            if !budgets.filter({ $0.amount - $0.remainingAmount > 0 }).isEmpty {
+                VStack(alignment: .leading, spacing: 12) {
+                    ForEach(budgets.filter({ $0.amount - $0.remainingAmount > 0 })) { budget in
+                        HStack(spacing: 12) {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            budget.getColor(),
+                                            budget.getColor().opacity(0.7)
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 14, height: 14)
+                            
+                            Text(budget.name)
+                                .font(.callout)
+                                .fontWeight(.medium)
+                                .foregroundColor(.primary)
+                            
+                            Spacer()
+                            
+                            Text("₹\(budget.amount - budget.remainingAmount, specifier: "%.0f")")
+                                .font(.callout)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
+                .padding(.top, 8)
             }
-            .padding(.top, 8)
         }
         .padding()
-        .background(Color(UIColor.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
+        .cardStyle()
     }
 }
 
 struct BudgetCardView: View {
     let budget: Budget
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         HStack(spacing: 16) {
             ZStack {
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(budget.getColor().opacity(0.15))
-                    .frame(width: 50, height: 50)
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                budget.getColor().opacity(colorScheme == .dark ? 0.3 : 0.2),
+                                budget.getColor().opacity(colorScheme == .dark ? 0.15 : 0.1)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 56, height: 56)
                 if budget.icon.count == 1 && budget.icon.unicodeScalars.first?.properties.isEmoji == true {
                     Text(budget.icon)
-                        .font(.system(size: 22))
+                        .font(.system(size: 26))
                 } else {
                     Image(systemName: budget.icon)
                         .foregroundColor(budget.getColor())
-                        .font(.system(size: 22, weight: .medium))
+                        .font(.system(size: 24, weight: .semibold))
                 }
             }
             
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text(budget.name)
                     .font(.headline)
+                    .fontWeight(.semibold)
                     .foregroundColor(.primary)
                 
                 Text("₹\(budget.remainingAmount, specifier: "%.0f") of ₹\(budget.amount, specifier: "%.0f") remaining")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 
-                ProgressBar(progress: 1 - budget.spentPercentage, color: budget.getColor())
-                    .frame(height: 6)
-                    .clipShape(Capsule())
-                    .padding(.top, 4)
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        // Background track
+                        Capsule()
+                            .fill(
+                                colorScheme == .dark
+                                ? Color.white.opacity(0.1)
+                                : budget.getColor().opacity(0.15)
+                            )
+                            .frame(height: 8)
+                        
+                        // Progress fill with gradient
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [
+                                        budget.getColor(),
+                                        budget.getColor().opacity(0.7)
+                                    ],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .frame(
+                                width: max(8, min(CGFloat(1 - budget.spentPercentage) * geometry.size.width, geometry.size.width)),
+                                height: 8
+                            )
+                            .animation(.spring(response: 0.6, dampingFraction: 0.8), value: budget.spentPercentage)
+                    }
+                }
+                .frame(height: 8)
+                .padding(.top, 2)
             }
             
             Spacer()
             
-            VStack(alignment: .trailing, spacing: 4) {
+            VStack(alignment: .trailing, spacing: 6) {
                 Text("\(Int(budget.spentPercentage * 100))%")
-                    .font(.headline)
-                    .fontWeight(.semibold)
+                    .font(.title3)
+                    .fontWeight(.bold)
                     .foregroundColor(budget.spentPercentage > 0.9 ? .red : budget.getColor())
                 
                 Image(systemName: "chevron.right")
-                    .font(.caption)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
                     .foregroundColor(.secondary)
-                    .padding(.top, 4)
             }
         }
         .padding()
-        .background(Color(UIColor.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 4)
+        .cardStyle()
     }
 }
 
 struct EmptyBudgetView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "creditcard.fill")
-                .font(.system(size: 50))
-                .foregroundColor(.secondary.opacity(0.5))
-            
-            Text("No Budgets Yet")
-                .font(.headline)
-                .foregroundColor(.primary)
-            
-            Text("Add a budget to start tracking your expenses")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
+        VStack(spacing: 24) {
+            ZStack {
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.blue.opacity(colorScheme == .dark ? 0.2 : 0.1),
+                                Color.blue.opacity(colorScheme == .dark ? 0.1 : 0.05)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 100, height: 100)
                 
-            Button {
-                // This would be connected to showing the add budget sheet
-            } label: {
-                Text("Add Budget")
-                    .fontWeight(.medium)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 24)
-                    .padding(.vertical, 12)
-                    .background(Color.blue)
-                    .cornerRadius(12)
+                Image(systemName: "creditcard.fill")
+                    .font(.system(size: 50, weight: .light))
+                    .foregroundColor(.blue.opacity(0.6))
+            }
+            
+            VStack(spacing: 8) {
+                Text("No Budgets Yet")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+                
+                Text("Add a budget to start tracking your expenses")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
             }
         }
         .frame(maxWidth: .infinity)
         .padding(40)
-        .background(Color(UIColor.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 4)
+        .cardStyle()
     }
 }
 

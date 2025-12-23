@@ -98,7 +98,7 @@ struct AddBudgetView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
+                    Button {
                         if let amountValue = Double(amount) {
                             let chosenIcon = !emoji.isEmpty ? emoji : icon
                             let newBudget = Budget(
@@ -110,6 +110,10 @@ struct AddBudgetView: View {
                             viewModel.addBudget(newBudget)
                             presentationMode.wrappedValue.dismiss()
                         }
+                    } label: {
+                        Text("Save")
+                            .fontWeight(.semibold)
+                            .primaryButton(color: .blue)
                     }
                     .disabled(!isFormValid)
                 }

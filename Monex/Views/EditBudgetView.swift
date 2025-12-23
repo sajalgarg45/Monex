@@ -75,7 +75,7 @@ struct EditBudgetView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
+                    Button {
                         if let amountValue = Double(amount) {
                             var updatedBudget = budget
                             updatedBudget.name = name
@@ -87,6 +87,10 @@ struct EditBudgetView: View {
                             budget = updatedBudget
                             presentationMode.wrappedValue.dismiss()
                         }
+                    } label: {
+                        Text("Save")
+                            .fontWeight(.semibold)
+                            .primaryButton(color: .blue)
                     }
                     .disabled(!isFormValid)
                 }

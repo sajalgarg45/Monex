@@ -25,14 +25,21 @@ struct BudgetsView: View {
                     HStack {
                         Text("Your Budgets")
                             .font(.headline)
+                            .fontWeight(.semibold)
                         
                         Spacer()
                         
                         Button {
                             showingAddBudget = true
                         } label: {
-                            Label("Add Budget", systemImage: "plus.circle.fill")
-                                .font(.subheadline)
+                            HStack(spacing: 6) {
+                                Image(systemName: "plus")
+                                    .font(.system(size: 14, weight: .semibold))
+                                Text("Add")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                            }
+                            .primaryButton(color: .blue)
                         }
                     }
                     .padding(.horizontal)
@@ -55,6 +62,16 @@ struct BudgetsView: View {
                 }
                 .padding(.vertical)
             }
+            .background(
+                LinearGradient(
+                    colors: [
+                        Color(UIColor.systemGroupedBackground),
+                        Color(UIColor.systemGroupedBackground).opacity(0.8)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
             .navigationTitle("Budgets")
             .sheet(isPresented: $showingAddBudget) {
                 AddBudgetView(viewModel: viewModel)

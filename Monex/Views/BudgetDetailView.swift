@@ -20,11 +20,8 @@ struct BudgetDetailView: View {
                 if !budget.expenses.isEmpty {
                     if #available(iOS 16.0, *) {
                         ExpenseChart(expenses: budget.expenses)
-                            .frame(height: 200)
                             .padding()
-                            .background(Color(UIColor.systemBackground))
-                            .cornerRadius(12)
-                            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                            .cardStyle()
                     }
                 }
                 
@@ -32,14 +29,21 @@ struct BudgetDetailView: View {
                 HStack {
                     Text("Expenses")
                         .font(.headline)
+                        .fontWeight(.semibold)
                     
                     Spacer()
                     
                     Button {
                         showingAddExpense = true
                     } label: {
-                        Label("Add", systemImage: "plus.circle.fill")
-                            .font(.subheadline)
+                        HStack(spacing: 6) {
+                            Image(systemName: "plus")
+                                .font(.system(size: 14, weight: .semibold))
+                            Text("Add")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                        }
+                        .primaryButton(color: .green)
                     }
                 }
                 .padding(.top)
@@ -113,70 +117,111 @@ struct BudgetDetailView: View {
 
 struct BudgetInfoCard: View {
     let budget: Budget
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 18) {
             HStack {
-                if budget.icon.count == 1 && budget.icon.unicodeScalars.first?.properties.isEmoji == true {
-                    Text(budget.icon)
-                        .font(.largeTitle)
-                        .frame(width: 60, height: 60)
-                        .background(budget.getColor().opacity(0.2))
-                        .cornerRadius(15)
-                } else {
-                    Image(systemName: budget.icon)
-                        .foregroundColor(budget.getColor())
-                        .font(.largeTitle)
-                        .frame(width: 60, height: 60)
-                        .background(budget.getColor().opacity(0.2))
-                        .cornerRadius(15)
+                ZStack {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    budget.getColor().opacity(colorScheme == .dark ? 0.3 : 0.2),
+                                    budget.getColor().opacity(colorScheme == .dark ? 0.15 : 0.1)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 64, height: 64)
+                    
+                    if budget.icon.count == 1 && budget.icon.unicodeScalars.first?.properties.isEmoji == true {
+                        Text(budget.icon)
+                            .font(.system(size: 32))
+                    } else {
+                        Image(systemName: budget.icon)
+                            .foregroundColor(budget.getColor())
+                            .font(.system(size: 30, weight: .semibold))
+                    }
                 }
                 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text(budget.name)
-                        .font(.headline)
+                        .font(.title3)
+                        .fontWeight(.semibold)
                     
                     Text("Budget: ₹\(budget.amount, specifier: "%.0f")")
                         .font(.subheadline)
+                        .fontWeight(.medium)
                         .foregroundColor(.secondary)
                 }
                 
                 Spacer()
                 
-                VStack(alignment: .trailing, spacing: 4) {
+                VStack(alignment: .trailing, spacing: 6) {
                     Text("Remaining")
                         .font(.caption)
+                        .fontWeight(.medium)
                         .foregroundColor(.secondary)
                     
                     Text("₹\(budget.remainingAmount, specifier: "%.0f")")
-                        .font(.title3)
+                        .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(budget.remainingAmount < budget.amount * 0.2 ? .red : .primary)
                 }
             }
             
             // Progress bar
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Text("Spent: ₹\(budget.amount - budget.remainingAmount, specifier: "%.0f")")
                         .font(.caption)
+                        .fontWeight(.medium)
                         .foregroundColor(.secondary)
                     
                     Spacer()
                     
                     Text("\(Int(budget.spentPercentage * 100))%")
                         .font(.caption)
-                        .fontWeight(.medium)
+                        .fontWeight(.bold)
                 }
                 
-                ProgressBar(progress: budget.spentPercentage, color: budget.getColor())
-                    .frame(height: 8)
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        // Background track
+                        Capsule()
+                            .fill(
+                                colorScheme == .dark
+                                ? Color.white.opacity(0.1)
+                                : budget.getColor().opacity(0.15)
+                            )
+                            .frame(height: 10)
+                        
+                        // Progress fill with gradient
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [
+                                        budget.getColor(),
+                                        budget.getColor().opacity(0.7)
+                                    ],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .frame(
+                                width: min(CGFloat(budget.spentPercentage) * geometry.size.width, geometry.size.width),
+                                height: 10
+                            )
+                            .animation(.spring(response: 0.6, dampingFraction: 0.8), value: budget.spentPercentage)
+                    }
+                }
+                .frame(height: 10)
             }
         }
         .padding()
-        .background(Color(UIColor.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+        .cardStyle()
     }
 }
 
@@ -193,6 +238,7 @@ struct ExpenseChart: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Expenses Over Time")
                 .font(.headline)
+                .fontWeight(.semibold)
             
             Chart {
                 ForEach(sortedExpenses, id: \.id) { expense in
@@ -200,11 +246,28 @@ struct ExpenseChart: View {
                         x: .value("Date", expense.date),
                         y: .value("Amount", expense.amount)
                     )
+                    .foregroundStyle(
+                        LinearGradient(
+                            colors: [.blue, .blue.opacity(0.7)],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .lineStyle(StrokeStyle(lineWidth: 3, lineCap: .round))
+                    
+                    PointMark(
+                        x: .value("Date", expense.date),
+                        y: .value("Amount", expense.amount)
+                    )
                     .foregroundStyle(.blue)
                     .symbol {
                         Circle()
                             .fill(.blue)
-                            .frame(width: 8, height: 8)
+                            .frame(width: 10, height: 10)
+                            .overlay(
+                                Circle()
+                                    .stroke(.white, lineWidth: 2)
+                            )
                     }
                     
                     AreaMark(
@@ -212,11 +275,17 @@ struct ExpenseChart: View {
                         y: .value("Amount", expense.amount)
                     )
                     .foregroundStyle(
-                        .linearGradient(colors: [.blue.opacity(0.3), .blue.opacity(0.1)],
-                                        startPoint: .top,
-                                        endPoint: .bottom)
+                        .linearGradient(
+                            colors: [.blue.opacity(0.2), .blue.opacity(0.05)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
                     )
                 }
+            }
+            .frame(height: 200)
+            .chartYAxis {
+                AxisMarks(position: .leading)
             }
         }
     }
@@ -226,6 +295,7 @@ struct ExpenseRowView: View {
     let expense: Expense
     let onEdit: () -> Void
     let onDelete: () -> Void
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         HStack {
@@ -271,33 +341,49 @@ struct ExpenseRowView: View {
             }
         }
         .padding()
-        .background(Color(UIColor.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+        .cardStyle()
     }
 }
 
 struct EmptyExpenseView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "dollarsign.square.fill")
-                .font(.system(size: 50))
-                .foregroundColor(.secondary.opacity(0.5))
+        VStack(spacing: 24) {
+            ZStack {
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.green.opacity(colorScheme == .dark ? 0.2 : 0.1),
+                                Color.green.opacity(colorScheme == .dark ? 0.1 : 0.05)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 100, height: 100)
+                
+                Image(systemName: "dollarsign.square.fill")
+                    .font(.system(size: 50, weight: .light))
+                    .foregroundColor(.green.opacity(0.6))
+            }
             
-            Text("No Expenses Yet")
-                .font(.headline)
-                .foregroundColor(.primary)
-            
-            Text("Add an expense to start tracking your spending in this budget")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
+            VStack(spacing: 8) {
+                Text("No Expenses Yet")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+                
+                Text("Add an expense to start tracking your spending in this budget")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(40)
-        .background(Color(UIColor.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+        .cardStyle()
     }
 }
 
