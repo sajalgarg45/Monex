@@ -32,17 +32,17 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		04E896152DB68EBE00CFEDA8 /* Finance-Assistant */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Finance-Assistant";
+			path = "Monex";
 			sourceTree = "<group>";
 		};
 		04E896232DB68EC000CFEDA8 /* Finance-AssistantTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Finance-AssistantTests";
+			path = "MonexTests";
 			sourceTree = "<group>";
 		};
 		04E8962D2DB68EC000CFEDA8 /* Finance-AssistantUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Finance-AssistantUITests";
+			path = "MonexUITests";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */

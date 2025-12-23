@@ -1,13 +1,13 @@
 //
-//  Finance_AssistantUITests.swift
-//  Finance-AssistantUITests
+//  MonexUITests.swift
+//  MonexUITests
 //
 //  Created by Sajal Garg on 21/04/25.
 //
 
 import XCTest
 
-final class Finance_AssistantUITests: XCTestCase {
+final class MonexUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

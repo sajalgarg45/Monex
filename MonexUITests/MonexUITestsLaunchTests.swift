@@ -1,13 +1,13 @@
 //
-//  Finance_AssistantUITestsLaunchTests.swift
-//  Finance-AssistantUITests
+//  MonexUITestsLaunchTests.swift
+//  MonexUITests
 //
 //  Created by Sajal Garg on 21/04/25.
 //
 
 import XCTest
 
-final class Finance_AssistantUITestsLaunchTests: XCTestCase {
+final class MonexUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

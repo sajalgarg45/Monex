@@ -1,14 +1,14 @@
 //
-//  Finance_AssistantTests.swift
-//  Finance-AssistantTests
+//  MonexTests.swift
+//  MonexTests
 //
 //  Created by Sajal Garg on 21/04/25.
 //
 
 import Testing
-@testable import Finance_Assistant
+@testable import Monex
 
-struct Finance_AssistantTests {
+struct MonexTests {
 
     @Test func example() async throws {
         // Write your test here and use APIs like `#expect(...)` to check expected conditions.
