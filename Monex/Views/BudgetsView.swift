@@ -26,19 +26,9 @@ struct BudgetsView: View {
                         Text("Your Budgets")
                             .font(.headline)
                             .fontWeight(.semibold)
-                        
-                        Spacer()
-                        
-                        Button {
-                            showingAddBudget = true
-                        } label: {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 32))
-                                .foregroundColor(.blue)
-                        }
                     }
                     .padding(.horizontal)
-                    .padding(.top)
+                    .padding(.top, 8)
                     
                     // Budget List
                     if viewModel.budgets.isEmpty {
@@ -68,6 +58,15 @@ struct BudgetsView: View {
                 )
             )
             .navigationTitle("Budgets")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingAddBudget = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
             .sheet(isPresented: $showingAddBudget) {
                 AddBudgetView(viewModel: viewModel)
             }

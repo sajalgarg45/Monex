@@ -10,49 +10,19 @@ struct ExpensesView: View {
     
     var body: some View {
         NavigationView {
-            VStack {
-                // Search bar
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(.secondary)
-                    
-                    TextField("Search expenses", text: $searchText)
-                        .autocapitalization(.none)
-                    
-                    if !searchText.isEmpty {
-                        Button {
-                            searchText = ""
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-                .padding(8)
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(10)
-                .padding(.horizontal)
-                
+            VStack(spacing: 0) {
                 ScrollView {
                     // Recent expenses section
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 12) {
                         HStack {
                             Text("All Expenses")
                                 .font(.headline)
                                 .fontWeight(.semibold)
                             
                             Spacer()
-                            
-                            Button {
-                                showingBudgetSelection = true
-                            } label: {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.system(size: 32))
-                                    .foregroundColor(.blue)
-                            }
                         }
                         .padding(.horizontal)
-                        .padding(.top)
+                        .padding(.top, 8)
                         
                         if getAllExpenses().isEmpty {
                             VStack(spacing: 20) {
@@ -110,6 +80,16 @@ struct ExpensesView: View {
                 }
             }
             .navigationTitle("Expenses")
+            .searchable(text: $searchText, prompt: "Search expenses")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingBudgetSelection = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
             .sheet(isPresented: $showingBudgetSelection) {
                 BudgetSelectionView(viewModel: viewModel) { budget in
                     selectedBudget = budget

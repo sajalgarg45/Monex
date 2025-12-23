@@ -3,6 +3,7 @@ import SwiftUI
 struct MainTabView: View {
     @ObservedObject var viewModel: BudgetViewModel
     @State private var selectedTab = 0
+    @State private var showingAddBudget = false
     
     var body: some View {
         // Main TabView with 4 tabs
@@ -22,6 +23,18 @@ struct MainTabView: View {
                     .ignoresSafeArea()
                     
                     DashboardContentView(viewModel: viewModel)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            showingAddBudget = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                    }
+                }
+                .sheet(isPresented: $showingAddBudget) {
+                    AddBudgetView(viewModel: viewModel)
                 }
             }
             .tabItem {
@@ -115,7 +128,6 @@ struct MainTabView: View {
 
 struct DashboardContentView: View {
     @ObservedObject var viewModel: BudgetViewModel
-    @State private var showingAddBudget = false
     
     private var greeting: String {
         let hour = Calendar.current.component(.hour, from: Date())
@@ -166,16 +178,6 @@ struct DashboardContentView: View {
                     Text("Your Budgets")
                         .font(.title3)
                         .fontWeight(.semibold)
-                    
-                    Spacer()
-                    
-                    Button {
-                        showingAddBudget = true
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 32))
-                            .foregroundColor(.blue)
-                    }
                 }
                 .padding(.top, 8)
                 
@@ -195,9 +197,6 @@ struct DashboardContentView: View {
             .padding(.horizontal)
             .padding(.top, 8)
             .padding(.bottom, 16)
-            .sheet(isPresented: $showingAddBudget) {
-                AddBudgetView(viewModel: viewModel)
-            }
         }
         .background(
             LinearGradient(
