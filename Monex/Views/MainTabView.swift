@@ -22,7 +22,6 @@ struct MainTabView: View {
                     .ignoresSafeArea()
                     
                     DashboardContentView(viewModel: viewModel)
-                        .navigationTitle("Dashboard")
                 }
             }
             .tabItem {
@@ -118,9 +117,35 @@ struct DashboardContentView: View {
     @ObservedObject var viewModel: BudgetViewModel
     @State private var showingAddBudget = false
     
+    private var greeting: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        switch hour {
+        case 0..<12:
+            return "Good Morning"
+        case 12..<17:
+            return "Good Afternoon"
+        case 17..<21:
+            return "Good Evening"
+        default:
+            return "Good Night"
+        }
+    }
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
+                // Greeting Header
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("\(greeting), \(viewModel.currentUser?.name ?? "User")")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(.primary)
+                    
+                    Text("Let's track your spending today.")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.top, 8)
+                
                 // Summary Cards
                 HStack(spacing: 16) {
                     SummaryCard(title: "Total Budget", value: viewModel.totalBudget, iconName: "banknote.fill", color: .blue)
@@ -148,10 +173,39 @@ struct DashboardContentView: View {
                         showingAddBudget = true
                     } label: {
                         Image(systemName: "plus")
-                            .font(.system(size: 20, weight: .medium))
+                            .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(.white)
-                            .frame(width: 50, height: 50)
-                            .background(Circle().fill(Color.blue))
+                            .frame(width: 56, height: 56)
+                            .background(
+                                ZStack {
+                                    Circle()
+                                        .fill(.ultraThinMaterial)
+                                    Circle()
+                                        .fill(
+                                            LinearGradient(
+                                                colors: [
+                                                    Color.blue.opacity(0.8),
+                                                    Color.blue.opacity(0.6)
+                                                ],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                        )
+                                    Circle()
+                                        .stroke(
+                                            LinearGradient(
+                                                colors: [
+                                                    Color.white.opacity(0.6),
+                                                    Color.white.opacity(0.2)
+                                                ],
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            ),
+                                            lineWidth: 1
+                                        )
+                                }
+                            )
+                            .shadow(color: Color.blue.opacity(0.4), radius: 12, x: 0, y: 6)
                     }
                 }
                 .padding(.top, 8)

@@ -33,10 +33,39 @@ struct BudgetsView: View {
                             showingAddBudget = true
                         } label: {
                             Image(systemName: "plus")
-                                .font(.system(size: 20, weight: .medium))
+                                .font(.system(size: 20, weight: .semibold))
                                 .foregroundColor(.white)
-                                .frame(width: 50, height: 50)
-                                .background(Circle().fill(Color.blue))
+                                .frame(width: 56, height: 56)
+                                .background(
+                                    ZStack {
+                                        Circle()
+                                            .fill(.ultraThinMaterial)
+                                        Circle()
+                                            .fill(
+                                                LinearGradient(
+                                                    colors: [
+                                                        Color.blue.opacity(0.8),
+                                                        Color.blue.opacity(0.6)
+                                                    ],
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                )
+                                            )
+                                        Circle()
+                                            .stroke(
+                                                LinearGradient(
+                                                    colors: [
+                                                        Color.white.opacity(0.6),
+                                                        Color.white.opacity(0.2)
+                                                    ],
+                                                    startPoint: .topLeading,
+                                                    endPoint: .bottomTrailing
+                                                ),
+                                                lineWidth: 1
+                                            )
+                                    }
+                                )
+                                .shadow(color: Color.blue.opacity(0.4), radius: 12, x: 0, y: 6)
                         }
                     }
                     .padding(.horizontal)
