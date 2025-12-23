@@ -46,14 +46,11 @@ struct ExpensesView: View {
                             Button {
                                 showingBudgetSelection = true
                             } label: {
-                                HStack(spacing: 6) {
-                                    Image(systemName: "plus")
-                                        .font(.system(size: 14, weight: .semibold))
-                                    Text("Add")
-                                        .font(.subheadline)
-                                        .fontWeight(.semibold)
-                                }
-                                .primaryButton(color: .green)
+                                Image(systemName: "plus")
+                                    .font(.system(size: 20, weight: .medium))
+                                    .foregroundColor(.white)
+                                    .frame(width: 50, height: 50)
+                                    .background(Circle().fill(Color.blue))
                             }
                         }
                         .padding(.horizontal)

@@ -92,48 +92,35 @@ struct SummaryCard: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 12) {
-                ZStack {
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    color.opacity(colorScheme == .dark ? 0.3 : 0.2),
-                                    color.opacity(colorScheme == .dark ? 0.15 : 0.1)
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .frame(width: 44, height: 44)
-                    
-                    Image(systemName: iconName)
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(color)
-                }
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: iconName)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(color)
                 
                 Text(title)
-                    .font(.subheadline)
-                    .fontWeight(.medium)
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.secondary)
+                    .lineLimit(1)
             }
             
             if isCount {
                 Text("\(Int(value))")
-                    .font(.title)
-                    .fontWeight(.bold)
+                    .font(.system(size: 26, weight: .semibold, design: .rounded))
                     .foregroundColor(.primary)
             } else {
                 Text("₹\(value, specifier: "%.0f")")
-                    .font(.title)
-                    .fontWeight(.bold)
+                    .font(.system(size: 28, weight: .semibold, design: .rounded))
                     .foregroundColor(.primary)
             }
         }
-        .padding(16)
+        .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .cardStyle()
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(UIColor.secondarySystemGroupedBackground))
+        )
+        .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.3 : 0.05), radius: 8, x: 0, y: 2)
     }
 }
 
@@ -142,76 +129,35 @@ struct SpendingChartView: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("Spending Breakdown")
-                .font(.headline)
-                .fontWeight(.semibold)
+                .font(.title3)
+                .fontWeight(.bold)
             
-            if #available(iOS 16.0, *) {
-                if budgets.filter({ $0.amount - $0.remainingAmount > 0 }).isEmpty {
-                    // Empty state
-                    VStack(spacing: 12) {
-                        Image(systemName: "chart.pie.fill")
-                            .font(.system(size: 50))
-                            .foregroundColor(.secondary.opacity(0.3))
-                        
-                        Text("No spending data yet")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 180)
-                } else {
-                    Chart {
-                        ForEach(budgets.filter({ $0.amount - $0.remainingAmount > 0 })) { budget in
-                            SectorMark(
-                                angle: .value("Amount", budget.amount - budget.remainingAmount),
-                                innerRadius: .ratio(0.65),
-                                angularInset: 2
-                            )
-                            .foregroundStyle(
-                                LinearGradient(
-                                    colors: [
-                                        budget.getColor(),
-                                        budget.getColor().opacity(0.7)
-                                    ],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
+            VStack(alignment: .leading, spacing: 16) {
+                if #available(iOS 16.0, *) {
+                    if budgets.filter({ $0.amount - $0.remainingAmount > 0 }).isEmpty {
+                        // Empty state
+                        VStack(spacing: 12) {
+                            Image(systemName: "chart.pie.fill")
+                                .font(.system(size: 50))
+                                .foregroundColor(.secondary.opacity(0.3))
+                            
+                            Text("No spending data yet")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 180)
+                    } else {
+                        Chart {
+                            ForEach(budgets.filter({ $0.amount - $0.remainingAmount > 0 })) { budget in
+                                SectorMark(
+                                    angle: .value("Amount", budget.amount - budget.remainingAmount),
+                                    innerRadius: .ratio(0.65),
+                                    angularInset: 2
                                 )
-                            )
-                            .cornerRadius(4)
-                        }
-                    }
-                    .frame(height: 180)
-                    .chartBackground { chartProxy in
-                        GeometryReader { geometry in
-                            let frame = geometry[chartProxy.plotAreaFrame]
-                            VStack(spacing: 4) {
-                                Text("Total")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                Text("₹\(budgets.reduce(0) { $0 + ($1.amount - $1.remainingAmount) }, specifier: "%.0f")")
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.primary)
-                            }
-                            .position(x: frame.midX, y: frame.midY)
-                        }
-                    }
-                }
-            } else {
-                // Fallback for iOS versions earlier than 16
-                Text("Chart requires iOS 16 or later")
-                    .foregroundColor(.secondary)
-            }
-            
-            // Legend
-            if !budgets.filter({ $0.amount - $0.remainingAmount > 0 }).isEmpty {
-                VStack(alignment: .leading, spacing: 12) {
-                    ForEach(budgets.filter({ $0.amount - $0.remainingAmount > 0 })) { budget in
-                        HStack(spacing: 12) {
-                            Circle()
-                                .fill(
+                                .foregroundStyle(
                                     LinearGradient(
                                         colors: [
                                             budget.getColor(),
@@ -221,27 +167,74 @@ struct SpendingChartView: View {
                                         endPoint: .bottomTrailing
                                     )
                                 )
-                                .frame(width: 14, height: 14)
-                            
-                            Text(budget.name)
-                                .font(.callout)
-                                .fontWeight(.medium)
-                                .foregroundColor(.primary)
-                            
-                            Spacer()
-                            
-                            Text("₹\(budget.amount - budget.remainingAmount, specifier: "%.0f")")
-                                .font(.callout)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.secondary)
+                                .cornerRadius(4)
+                            }
+                        }
+                        .frame(height: 180)
+                        .chartBackground { chartProxy in
+                            GeometryReader { geometry in
+                                let frame = geometry[chartProxy.plotAreaFrame]
+                                VStack(spacing: 4) {
+                                    Text("Total")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                    Text("₹\(budgets.reduce(0) { $0 + ($1.amount - $1.remainingAmount) }, specifier: "%.0f")")
+                                        .font(.title3)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.primary)
+                                }
+                                .position(x: frame.midX, y: frame.midY)
+                            }
                         }
                     }
+                } else {
+                    // Fallback for iOS versions earlier than 16
+                    Text("Chart requires iOS 16 or later")
+                        .foregroundColor(.secondary)
                 }
-                .padding(.top, 8)
+                
+                // Legend
+                if !budgets.filter({ $0.amount - $0.remainingAmount > 0 }).isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(budgets.filter({ $0.amount - $0.remainingAmount > 0 })) { budget in
+                            HStack(spacing: 12) {
+                                Circle()
+                                    .fill(
+                                        LinearGradient(
+                                            colors: [
+                                                budget.getColor(),
+                                                budget.getColor().opacity(0.7)
+                                            ],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                    )
+                                    .frame(width: 14, height: 14)
+                                
+                                Text(budget.name)
+                                    .font(.callout)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.primary)
+                                
+                                Spacer()
+                                
+                                Text("₹\(budget.amount - budget.remainingAmount, specifier: "%.0f")")
+                                    .font(.callout)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                    .padding(.top, 8)
+                }
             }
+            .padding()
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(UIColor.secondarySystemGroupedBackground))
+            )
+            .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.3 : 0.05), radius: 8, x: 0, y: 2)
         }
-        .padding()
-        .cardStyle()
     }
 }
 
@@ -280,7 +273,7 @@ struct BudgetCardView: View {
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
                 
-                Text("₹\(budget.remainingAmount, specifier: "%.0f") of ₹\(budget.amount, specifier: "%.0f") remaining")
+                Text("₹\(budget.remainingAmount, specifier: "%.0f") remaining")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 
