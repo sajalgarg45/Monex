@@ -10,6 +10,14 @@ class BudgetViewModel: ObservableObject {
     
     init() {
         loadData()
+        checkLoginState()
+    }
+    
+    private func checkLoginState() {
+        if let savedUser = loadUserData() {
+            isLoggedIn = true
+            currentUser = savedUser
+        }
     }
     
     // Login functionality (mock for now)
@@ -20,10 +28,56 @@ class BudgetViewModel: ObservableObject {
         // Don't load sample data by default - let user create their own budgets
     }
     
+    func signup(name: String, email: String, password: String) {
+        // Create new user
+        let newUser = User(id: UUID().uuidString, name: name, email: email)
+        
+        // Save user data
+        saveUserData(newUser)
+        
+        // Auto login after signup
+        isLoggedIn = true
+        currentUser = newUser
+    }
+    
+    func login(email: String, password: String) {
+        // Load saved user data
+        if let savedUser = loadUserData() {
+            isLoggedIn = true
+            currentUser = savedUser
+        } else {
+            // Fallback to mock user
+            isLoggedIn = true
+            currentUser = User.mockUser
+        }
+    }
+    
     func logout() {
         saveData()
         isLoggedIn = false
         currentUser = nil
+    }
+    
+    // MARK: - User Data Persistence
+    
+    private let userSavePath = FileManager.documentsDirectory.appendingPathComponent("SavedUser")
+    
+    private func saveUserData(_ user: User) {
+        do {
+            let data = try JSONEncoder().encode(user)
+            try data.write(to: userSavePath, options: [.atomic, .completeFileProtection])
+        } catch {
+            print("Failed to save user: \(error.localizedDescription)")
+        }
+    }
+    
+    private func loadUserData() -> User? {
+        do {
+            let data = try Data(contentsOf: userSavePath)
+            return try JSONDecoder().decode(User.self, from: data)
+        } catch {
+            return nil
+        }
     }
     
     // MARK: - Budget Management

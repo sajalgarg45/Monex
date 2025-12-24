@@ -4,7 +4,11 @@ struct ContentView: View {
     @StateObject private var viewModel = BudgetViewModel()
     
     var body: some View {
-        MainTabView(viewModel: viewModel)
+        if viewModel.isLoggedIn {
+            MainTabView(viewModel: viewModel)
+        } else {
+            LoginView(viewModel: viewModel)
+        }
     }
 }
 

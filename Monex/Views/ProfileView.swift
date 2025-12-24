@@ -59,7 +59,6 @@ struct ProfileView: View {
                             
                             Button {
                                 viewModel.logout()
-                                presentationMode.wrappedValue.dismiss()
                             } label: {
                                 HStack {
                                     Image(systemName: "rectangle.portrait.and.arrow.right")

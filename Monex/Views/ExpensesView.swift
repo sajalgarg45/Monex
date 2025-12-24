@@ -2,8 +2,8 @@ import SwiftUI
 
 struct ExpensesView: View {
     @ObservedObject var viewModel: BudgetViewModel
-    @State private var searchText = ""
     @State private var showingBudgetSelection = false
+    @State private var showingAddExpense = false
     @State private var selectedBudget: Budget?
     @State private var showingEditExpense = false
     @State private var selectedExpense: (Budget, Expense)?
@@ -12,18 +12,29 @@ struct ExpensesView: View {
         NavigationView {
             VStack(spacing: 0) {
                 ScrollView {
-                    // Recent expenses section
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack {
-                            Text("All Expenses")
-                                .font(.headline)
-                                .fontWeight(.semibold)
+                    VStack(alignment: .leading, spacing: 20) {
+                        // Header
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Your Expenses")
+                                .font(.system(size: 32, weight: .bold))
+                                .foregroundColor(.primary)
                             
-                            Spacer()
+                            Text("See where your money\ngoes")
+                                .font(.system(size: 28, weight: .bold))
+                                .foregroundColor(.secondary)
                         }
                         .padding(.horizontal)
                         .padding(.top, 8)
                         
+                        // Summary cards
+                        HStack(spacing: 16) {
+                            SummaryCard(title: "Total Spent", value: viewModel.totalSpent, iconName: "arrow.down.circle.fill", color: .red)
+                            SummaryCard(title: "Expenses", value: Double(getTotalExpenseCount()), iconName: "creditcard.fill", color: .blue, isCount: true)
+                        }
+                        .padding(.horizontal)
+                        
+                        // Recent expenses section
+                        VStack(alignment: .leading, spacing: 12) {
                         if getAllExpenses().isEmpty {
                             VStack(spacing: 20) {
                                 Image(systemName: "dollarsign.square.fill")
@@ -79,8 +90,9 @@ struct ExpensesView: View {
                     }
                 }
             }
-            .navigationTitle("Expenses")
-            .searchable(text: $searchText, prompt: "Search expenses")
+            }
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -94,22 +106,20 @@ struct ExpensesView: View {
                 BudgetSelectionView(viewModel: viewModel) { budget in
                     selectedBudget = budget
                     showingBudgetSelection = false
-                    // Show add expense form for selected budget
-                    if let budget = selectedBudget {
-                        let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id })
-                        if let index = index {
-                            let bindingBudget = Binding(
-                                get: { viewModel.budgets[index] },
-                                set: { viewModel.budgets[index] = $0 }
-                            )
-                            
-                            let addExpenseSheet = AddExpenseView(viewModel: viewModel, budget: bindingBudget)
-                            
-                            let hostingController = UIHostingController(rootView: addExpenseSheet)
-                            UIApplication.shared.windows.first?.rootViewController?
-                                .present(hostingController, animated: true, completion: nil)
-                        }
+                    // Delay slightly to allow first sheet to dismiss before showing next
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        showingAddExpense = true
                     }
+                }
+            }
+            .sheet(isPresented: $showingAddExpense) {
+                if let budget = selectedBudget,
+                   let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }) {
+                    let bindingBudget = Binding(
+                        get: { viewModel.budgets[index] },
+                        set: { viewModel.budgets[index] = $0 }
+                    )
+                    AddExpenseView(viewModel: viewModel, budget: bindingBudget)
                 }
             }
             .sheet(isPresented: $showingEditExpense) {
@@ -126,23 +136,29 @@ struct ExpensesView: View {
         }
     }
     
+    // Helper to get total expense count
+    private func getTotalExpenseCount() -> Int {
+        var count = 0
+        for budget in viewModel.budgets {
+            count += budget.expenses.count
+        }
+        return count
+    }
+    
     // Helper to get all expenses across budgets
     private func getAllExpenses() -> [ExpenseData] {
         var allExpenses: [ExpenseData] = []
         
         for budget in viewModel.budgets {
             for expense in budget.expenses {
-                // Filter by search text if present
-                if searchText.isEmpty || expense.title.lowercased().contains(searchText.lowercased()) {
-                    allExpenses.append(
-                        ExpenseData(
-                            budget: budget,
-                            budgetName: budget.name,
-                            budgetColor: budget.getColor(),
-                            expense: expense
-                        )
+                allExpenses.append(
+                    ExpenseData(
+                        budget: budget,
+                        budgetName: budget.name,
+                        budgetColor: budget.getColor(),
+                        expense: expense
                     )
-                }
+                )
             }
         }
         

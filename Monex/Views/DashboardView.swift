@@ -273,6 +273,10 @@ struct BudgetCardView: View {
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
                 
+                Text("Budget - ₹\(budget.amount, specifier: "%.0f")")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                
                 Text("₹\(budget.remainingAmount, specifier: "%.0f") remaining")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -313,10 +317,16 @@ struct BudgetCardView: View {
             
             Spacer()
             
-            Text("\(Int(budget.spentPercentage * 100))%")
-                .font(.title)
-                .fontWeight(.bold)
-                .foregroundColor(budget.spentPercentage > 0.9 ? .red : budget.getColor())
+            VStack(spacing: 4) {
+                Text("Spent")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Text("\(Int(budget.spentPercentage * 100))%")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(budget.spentPercentage > 0.9 ? .red : budget.getColor())
+            }
         }
         .padding()
         .cardStyle()

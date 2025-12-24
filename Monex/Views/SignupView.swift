@@ -1,11 +1,15 @@
 import SwiftUI
 
-struct LoginView: View {
+struct SignupView: View {
     @ObservedObject var viewModel: BudgetViewModel
+    @Environment(\.presentationMode) var presentationMode
+    @State private var name = ""
     @State private var email = ""
     @State private var password = ""
+    @State private var confirmPassword = ""
     @State private var isLoading = false
-    @State private var showingSignup = false
+    @State private var showError = false
+    @State private var errorMessage = ""
     
     var body: some View {
         ZStack {
@@ -22,17 +26,17 @@ struct LoginView: View {
             .ignoresSafeArea()
             
             VStack(spacing: 25) {
-                // App logo and title
+                // Header
                 VStack(spacing: 15) {
                     ZStack {
                         Circle()
                             .fill(Color.blue.opacity(0.1))
                             .frame(width: 110, height: 110)
                         
-                        Image(systemName: "dollarsign.circle.fill")
+                        Image(systemName: "person.crop.circle.badge.plus")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 80, height: 80)
+                            .frame(width: 70, height: 70)
                             .foregroundStyle(
                                 .linearGradient(
                                     colors: [.blue, .blue.opacity(0.7)],
@@ -43,7 +47,7 @@ struct LoginView: View {
                             .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 5)
                     }
                     
-                    Text("Finance Assistant")
+                    Text("Create Account")
                         .font(.system(size: 32, weight: .bold, design: .rounded))
                         .foregroundStyle(
                             .linearGradient(
@@ -52,33 +56,51 @@ struct LoginView: View {
                                 endPoint: .trailing
                             )
                         )
+                    
+                    Text("Start your financial journey")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                 }
-                .padding(.bottom, 40)
+                .padding(.bottom, 20)
                 
-                // Login form
+                // Signup form
                 VStack(spacing: 20) {
+                    TextField("Full Name", text: $name)
+                        .autocapitalization(.words)
+                        .padding()
+                        .background(Color(UIColor.secondarySystemGroupedBackground))
+                        .cornerRadius(16)
+                    
                     TextField("Email", text: $email)
                         .autocapitalization(.none)
                         .keyboardType(.emailAddress)
                         .padding()
-                        .background(Color(UIColor.secondarySystemBackground))
+                        .background(Color(UIColor.secondarySystemGroupedBackground))
                         .cornerRadius(16)
                     
                     SecureField("Password", text: $password)
                         .padding()
-                        .background(Color(UIColor.secondarySystemBackground))
+                        .background(Color(UIColor.secondarySystemGroupedBackground))
+                        .cornerRadius(16)
+                    
+                    SecureField("Confirm Password", text: $confirmPassword)
+                        .padding()
+                        .background(Color(UIColor.secondarySystemGroupedBackground))
                         .cornerRadius(16)
                 }
                 .padding(.horizontal)
                 
-                // Login button
+                // Error message
+                if showError {
+                    Text(errorMessage)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .padding(.horizontal)
+                }
+                
+                // Sign up button
                 Button(action: {
-                    isLoading = true
-                    // Simulate login process
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        viewModel.login(email: email, password: password)
-                        isLoading = false
-                    }
+                    signup()
                 }) {
                     if isLoading {
                         ProgressView()
@@ -90,7 +112,7 @@ struct LoginView: View {
                             .cornerRadius(16)
                             .shadow(color: .blue.opacity(0.3), radius: 5, x: 0, y: 3)
                     } else {
-                        Text("Login")
+                        Text("Sign Up")
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
                             .frame(height: 56)
@@ -104,67 +126,77 @@ struct LoginView: View {
                 .padding(.horizontal)
                 .padding(.top, 10)
                 
-                // Sign up option
+                // Login option
                 HStack {
-                    Text("Don't have an account?")
+                    Text("Already have an account?")
                         .foregroundColor(.secondary)
                     
                     Button(action: {
-                        showingSignup = true
+                        presentationMode.wrappedValue.dismiss()
                     }) {
-                        Text("Sign Up")
+                        Text("Login")
                             .fontWeight(.semibold)
                             .foregroundColor(.blue)
                     }
                 }
                 .padding(.top, 5)
-                .sheet(isPresented: $showingSignup) {
-                    SignupView(viewModel: viewModel)
-                }
                 
                 Spacer()
-                
-                // App features preview
-                VStack(spacing: 12) {
-                    Text("Start managing your finances")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    
-                    HStack(spacing: 30) {
-                        FeatureItem(icon: "chart.pie.fill", title: "Budgeting")
-                        FeatureItem(icon: "creditcard.fill", title: "Expenses")
-                        FeatureItem(icon: "chart.line.uptrend.xyaxis", title: "Analytics")
-                    }
-                    .padding(.top, 5)
-                }
-                .padding(.horizontal)
-                .padding(.bottom, 10)
             }
             .padding()
         }
     }
-}
-
-struct FeatureItem: View {
-    let icon: String
-    let title: String
     
-    var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: icon)
-                .font(.system(size: 22))
-                .foregroundColor(.blue)
-                .frame(width: 50, height: 50)
-                .background(Color.blue.opacity(0.1))
-                .clipShape(Circle())
-            
-            Text(title)
-                .font(.caption)
-                .foregroundColor(.secondary)
+    private func signup() {
+        // Validation
+        guard !name.isEmpty else {
+            showError = true
+            errorMessage = "Please enter your name"
+            return
+        }
+        
+        guard !email.isEmpty else {
+            showError = true
+            errorMessage = "Please enter your email"
+            return
+        }
+        
+        guard email.contains("@") && email.contains(".") else {
+            showError = true
+            errorMessage = "Please enter a valid email"
+            return
+        }
+        
+        guard !password.isEmpty else {
+            showError = true
+            errorMessage = "Please enter a password"
+            return
+        }
+        
+        guard password.count >= 6 else {
+            showError = true
+            errorMessage = "Password must be at least 6 characters"
+            return
+        }
+        
+        guard password == confirmPassword else {
+            showError = true
+            errorMessage = "Passwords do not match"
+            return
+        }
+        
+        isLoading = true
+        showError = false
+        
+        // Simulate signup process
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            viewModel.signup(name: name, email: email, password: password)
+            isLoading = false
+            presentationMode.wrappedValue.dismiss()
         }
     }
 }
 
 #Preview {
-    LoginView(viewModel: BudgetViewModel())
-} 
+    SignupView(viewModel: BudgetViewModel())
+}
