@@ -17,7 +17,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "04E896122DB68EBE00CFEDA8"
                BuildableName = "Monex.app"
-               BlueprintName = "Finance-Assistant"
+               BlueprintName = "Monex"
                ReferencedContainer = "container:Monex.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -36,8 +36,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "04E8961F2DB68EC000CFEDA8"
-               BuildableName = "Finance-AssistantTests.xctest"
-               BlueprintName = "Finance-AssistantTests"
+               BuildableName = "MonexTests.xctest"
+               BlueprintName = "MonexTests"
                ReferencedContainer = "container:Monex.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -47,8 +47,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "04E896292DB68EC000CFEDA8"
-               BuildableName = "Finance-AssistantUITests.xctest"
-               BlueprintName = "Finance-AssistantUITests"
+               BuildableName = "MonexUITests.xctest"
+               BlueprintName = "MonexUITests"
                ReferencedContainer = "container:Monex.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -70,7 +70,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "04E896122DB68EBE00CFEDA8"
             BuildableName = "Monex.app"
-            BlueprintName = "Finance-Assistant"
+            BlueprintName = "Monex"
             ReferencedContainer = "container:Monex.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -87,7 +87,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "04E896122DB68EBE00CFEDA8"
             BuildableName = "Monex.app"
-            BlueprintName = "Finance-Assistant"
+            BlueprintName = "Monex"
             ReferencedContainer = "container:Monex.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

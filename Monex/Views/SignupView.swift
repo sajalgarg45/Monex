@@ -13,52 +13,19 @@ struct SignupView: View {
     
     var body: some View {
         ZStack {
-            // Background gradient
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(UIColor.systemBackground),
-                    Color.blue.opacity(0.1),
-                    Color(UIColor.systemBackground)
-                ]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            Color(UIColor.systemBackground)
+                .ignoresSafeArea()
             
-            VStack(spacing: 25) {
+            ScrollView {
+                VStack(spacing: 25) {
                 // Header
-                VStack(spacing: 15) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.blue.opacity(0.1))
-                            .frame(width: 110, height: 110)
-                        
-                        Image(systemName: "person.crop.circle.badge.plus")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 70, height: 70)
-                            .foregroundStyle(
-                                .linearGradient(
-                                    colors: [.blue, .blue.opacity(0.7)],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                            .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 5)
-                    }
-                    
+                VStack(spacing: 12) {
                     Text("Create Account")
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
-                        .foregroundStyle(
-                            .linearGradient(
-                                colors: [.primary, .primary.opacity(0.7)],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
+                        .font(.system(size: 40, weight: .black, design: .rounded))
+                        .foregroundColor(.primary)
                     
                     Text("Start your financial journey")
-                        .font(.subheadline)
+                        .font(.system(size: 17, weight: .medium))
                         .foregroundColor(.secondary)
                 }
                 .padding(.bottom, 20)
@@ -104,24 +71,22 @@ struct SignupView: View {
                 }) {
                     if isLoading {
                         ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .progressViewStyle(CircularProgressViewStyle(tint: .primary))
                             .frame(maxWidth: .infinity)
-                            .frame(height: 56)
-                            .background(Color.blue.gradient)
-                            .foregroundColor(.white)
-                            .cornerRadius(16)
-                            .shadow(color: .blue.opacity(0.3), radius: 5, x: 0, y: 3)
+                            .frame(height: 54)
                     } else {
                         Text("Sign Up")
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 56)
-                            .background(Color.blue.gradient)
-                            .foregroundColor(.white)
-                            .cornerRadius(16)
-                            .shadow(color: .blue.opacity(0.3), radius: 5, x: 0, y: 3)
+                            .frame(height: 54)
                     }
                 }
+                .background(.ultraThinMaterial)
+                .cornerRadius(14)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+                )
                 .disabled(isLoading)
                 .padding(.horizontal)
                 .padding(.top, 10)
@@ -136,14 +101,15 @@ struct SignupView: View {
                     }) {
                         Text("Login")
                             .fontWeight(.semibold)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.primary)
                     }
                 }
                 .padding(.top, 5)
                 
-                Spacer()
+                Spacer(minLength: 40)
+                }
+                .padding()
             }
-            .padding()
         }
     }
     

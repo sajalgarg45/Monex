@@ -6,52 +6,24 @@ struct LoginView: View {
     @State private var password = ""
     @State private var isLoading = false
     @State private var showingSignup = false
+    @State private var showError = false
+    @State private var errorMessage = ""
     
     var body: some View {
         ZStack {
-            // Background gradient
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color(UIColor.systemBackground),
-                    Color.blue.opacity(0.1),
-                    Color(UIColor.systemBackground)
-                ]),
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            Color(UIColor.systemBackground)
+                .ignoresSafeArea()
             
             VStack(spacing: 25) {
                 // App logo and title
-                VStack(spacing: 15) {
-                    ZStack {
-                        Circle()
-                            .fill(Color.blue.opacity(0.1))
-                            .frame(width: 110, height: 110)
-                        
-                        Image(systemName: "dollarsign.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 80, height: 80)
-                            .foregroundStyle(
-                                .linearGradient(
-                                    colors: [.blue, .blue.opacity(0.7)],
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
-                            .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 5)
-                    }
+                VStack(spacing: 12) {
+                    Text("Monex")
+                        .font(.system(size: 48, weight: .black, design: .rounded))
+                        .foregroundColor(.primary)
                     
-                    Text("Finance Assistant")
-                        .font(.system(size: 32, weight: .bold, design: .rounded))
-                        .foregroundStyle(
-                            .linearGradient(
-                                colors: [.primary, .primary.opacity(0.7)],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
-                        )
+                    Text("Where money feels simple")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(.secondary)
                 }
                 .padding(.bottom, 40)
                 
@@ -71,35 +43,36 @@ struct LoginView: View {
                 }
                 .padding(.horizontal)
                 
+                // Error message
+                if showError {
+                    Text(errorMessage)
+                        .font(.caption)
+                        .foregroundColor(.red)
+                        .padding(.horizontal)
+                }
+                
                 // Login button
                 Button(action: {
-                    isLoading = true
-                    // Simulate login process
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        viewModel.login(email: email, password: password)
-                        isLoading = false
-                    }
+                    login()
                 }) {
                     if isLoading {
                         ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .progressViewStyle(CircularProgressViewStyle(tint: .primary))
                             .frame(maxWidth: .infinity)
-                            .frame(height: 56)
-                            .background(Color.blue.gradient)
-                            .foregroundColor(.white)
-                            .cornerRadius(16)
-                            .shadow(color: .blue.opacity(0.3), radius: 5, x: 0, y: 3)
+                            .frame(height: 54)
                     } else {
                         Text("Login")
                             .fontWeight(.semibold)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 56)
-                            .background(Color.blue.gradient)
-                            .foregroundColor(.white)
-                            .cornerRadius(16)
-                            .shadow(color: .blue.opacity(0.3), radius: 5, x: 0, y: 3)
+                            .frame(height: 54)
                     }
                 }
+                .background(.ultraThinMaterial)
+                .cornerRadius(14)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 14)
+                        .stroke(Color.primary.opacity(0.1), lineWidth: 1)
+                )
                 .disabled(isLoading)
                 .padding(.horizontal)
                 .padding(.top, 10)
@@ -114,7 +87,7 @@ struct LoginView: View {
                     }) {
                         Text("Sign Up")
                             .fontWeight(.semibold)
-                            .foregroundColor(.blue)
+                            .foregroundColor(.primary)
                     }
                 }
                 .padding(.top, 5)
@@ -143,6 +116,47 @@ struct LoginView: View {
             .padding()
         }
     }
+    
+    private func login() {
+        // Validation
+        guard !email.isEmpty else {
+            showError = true
+            errorMessage = "Please enter your email"
+            return
+        }
+        
+        guard email.contains("@") && email.contains(".") else {
+            showError = true
+            errorMessage = "Please enter a valid email"
+            return
+        }
+        
+        guard !password.isEmpty else {
+            showError = true
+            errorMessage = "Please enter your password"
+            return
+        }
+        
+        guard password.count >= 6 else {
+            showError = true
+            errorMessage = "Password must be at least 6 characters"
+            return
+        }
+        
+        isLoading = true
+        showError = false
+        
+        // Attempt login
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            let success = viewModel.login(email: email, password: password)
+            isLoading = false
+            
+            if !success {
+                showError = true
+                errorMessage = "Invalid email or password"
+            }
+        }
+    }
 }
 
 struct FeatureItem: View {
@@ -153,9 +167,9 @@ struct FeatureItem: View {
         VStack(spacing: 8) {
             Image(systemName: icon)
                 .font(.system(size: 22))
-                .foregroundColor(.blue)
+                .foregroundColor(.primary)
                 .frame(width: 50, height: 50)
-                .background(Color.blue.opacity(0.1))
+                .background(Color.primary.opacity(0.08))
                 .clipShape(Circle())
             
             Text(title)

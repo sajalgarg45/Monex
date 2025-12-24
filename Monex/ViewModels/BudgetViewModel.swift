@@ -40,16 +40,17 @@ class BudgetViewModel: ObservableObject {
         currentUser = newUser
     }
     
-    func login(email: String, password: String) {
+    func login(email: String, password: String) -> Bool {
         // Load saved user data
         if let savedUser = loadUserData() {
-            isLoggedIn = true
-            currentUser = savedUser
-        } else {
-            // Fallback to mock user
-            isLoggedIn = true
-            currentUser = User.mockUser
+            // Verify email matches
+            if savedUser.email.lowercased() == email.lowercased() {
+                isLoggedIn = true
+                currentUser = savedUser
+                return true
+            }
         }
+        return false
     }
     
     func logout() {

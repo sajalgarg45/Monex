@@ -110,16 +110,16 @@
 			fileSystemSynchronizedGroups = (
 				04E896152DB68EBE00CFEDA8 /* Monex */,
 			);
-			name = "Finance-Assistant";
+			name = Monex;
 			packageProductDependencies = (
 			);
-			productName = "Finance-Assistant";
-			productReference = 04E896132DB68EBE00CFEDA8 /* Finance-Assistant.app */;
+			productName = Monex;
+			productReference = 04E896132DB68EBE00CFEDA8 /* Monex.app */;
 			productType = "com.apple.product-type.application";
 		};
-		04E8961F2DB68EC000CFEDA8 /* Finance-AssistantTests */ = {
+		04E8961F2DB68EC000CFEDA8 /* MonexTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 04E896372DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-AssistantTests" */;
+			buildConfigurationList = 04E896372DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "MonexTests" */;
 			buildPhases = (
 				04E8961C2DB68EC000CFEDA8 /* Sources */,
 				04E8961D2DB68EC000CFEDA8 /* Frameworks */,
@@ -133,16 +133,16 @@
 			fileSystemSynchronizedGroups = (
 				04E896232DB68EC000CFEDA8 /* MonexTests */,
 			);
-			name = "Finance-AssistantTests";
+			name = MonexTests;
 			packageProductDependencies = (
 			);
-			productName = "Finance-AssistantTests";
-			productReference = 04E896202DB68EC000CFEDA8 /* Finance-AssistantTests.xctest */;
+			productName = MonexTests;
+			productReference = 04E896202DB68EC000CFEDA8 /* MonexTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		04E896292DB68EC000CFEDA8 /* Finance-AssistantUITests */ = {
+		04E896292DB68EC000CFEDA8 /* MonexUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 04E8963A2DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-AssistantUITests" */;
+			buildConfigurationList = 04E8963A2DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "MonexUITests" */;
 			buildPhases = (
 				04E896262DB68EC000CFEDA8 /* Sources */,
 				04E896272DB68EC000CFEDA8 /* Frameworks */,
@@ -156,11 +156,11 @@
 			fileSystemSynchronizedGroups = (
 				04E8962D2DB68EC000CFEDA8 /* MonexUITests */,
 			);
-			name = "Finance-AssistantUITests";
+			name = MonexUITests;
 			packageProductDependencies = (
 			);
-			productName = "Finance-AssistantUITests";
-			productReference = 04E8962A2DB68EC000CFEDA8 /* Finance-AssistantUITests.xctest */;
+			productName = MonexUITests;
+			productReference = 04E8962A2DB68EC000CFEDA8 /* MonexUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -200,9 +200,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				04E896122DB68EBE00CFEDA8 /* Finance-Assistant */,
-				04E8961F2DB68EC000CFEDA8 /* Finance-AssistantTests */,
-				04E896292DB68EC000CFEDA8 /* Finance-AssistantUITests */,
+				04E896122DB68EBE00CFEDA8 /* Monex */,
+				04E8961F2DB68EC000CFEDA8 /* MonexTests */,
+				04E896292DB68EC000CFEDA8 /* MonexUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -258,12 +258,12 @@
 /* Begin PBXTargetDependency section */
 		04E896222DB68EC000CFEDA8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 04E896122DB68EBE00CFEDA8 /* Finance-Assistant */;
+			target = 04E896122DB68EBE00CFEDA8 /* Monex */;
 			targetProxy = 04E896212DB68EC000CFEDA8 /* PBXContainerItemProxy */;
 		};
 		04E8962C2DB68EC000CFEDA8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 04E896122DB68EBE00CFEDA8 /* Finance-Assistant */;
+			target = 04E896122DB68EBE00CFEDA8 /* Monex */;
 			targetProxy = 04E8962B2DB68EC000CFEDA8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -531,7 +531,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		04E896342DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-Assistant" */ = {
+		04E896342DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Monex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				04E896352DB68EC000CFEDA8 /* Debug */,
@@ -540,7 +540,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		04E896372DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-AssistantTests" */ = {
+		04E896372DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "MonexTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				04E896382DB68EC000CFEDA8 /* Debug */,
@@ -549,7 +549,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		04E8963A2DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "Finance-AssistantUITests" */ = {
+		04E8963A2DB68EC000CFEDA8 /* Build configuration list for PBXNativeTarget "MonexUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				04E8963B2DB68EC000CFEDA8 /* Debug */,
