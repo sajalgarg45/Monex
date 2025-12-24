@@ -4,6 +4,7 @@ struct MainTabView: View {
     @ObservedObject var viewModel: BudgetViewModel
     @State private var selectedTab = 0
     @State private var showingAddBudget = false
+    @State private var showingNotifications = false
     
     var body: some View {
         // Main TabView with 4 tabs
@@ -27,14 +28,17 @@ struct MainTabView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
-                            showingAddBudget = true
+                            showingNotifications = true
                         } label: {
-                            Image(systemName: "plus")
+                            Image(systemName: "bell.fill")
                         }
                     }
                 }
                 .sheet(isPresented: $showingAddBudget) {
                     AddBudgetView(viewModel: viewModel)
+                }
+                .sheet(isPresented: $showingNotifications) {
+                    NotificationsView(viewModel: viewModel)
                 }
             }
             .tabItem {
@@ -174,12 +178,10 @@ struct DashboardContentView: View {
                     .padding(.vertical, 4)
                 
                 // Budgets Section
-                HStack {
-                    Text("Your Budgets")
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                }
-                .padding(.top, 8)
+                Text("Your Budgets")
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .padding(.top, 8)
                 
                 // Budget List
                 if viewModel.budgets.isEmpty {

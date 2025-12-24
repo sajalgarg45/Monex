@@ -30,19 +30,19 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		04E896152DB68EBE00CFEDA8 /* Finance-Assistant */ = {
+		04E896152DB68EBE00CFEDA8 /* Monex */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "Monex";
+			path = Monex;
 			sourceTree = "<group>";
 		};
-		04E896232DB68EC000CFEDA8 /* Finance-AssistantTests */ = {
+		04E896232DB68EC000CFEDA8 /* MonexTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "MonexTests";
+			path = MonexTests;
 			sourceTree = "<group>";
 		};
-		04E8962D2DB68EC000CFEDA8 /* Finance-AssistantUITests */ = {
+		04E8962D2DB68EC000CFEDA8 /* MonexUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = "MonexUITests";
+			path = MonexUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,9 +75,9 @@
 		04E8960A2DB68EBE00CFEDA8 = {
 			isa = PBXGroup;
 			children = (
-				04E896152DB68EBE00CFEDA8 /* Finance-Assistant */,
-				04E896232DB68EC000CFEDA8 /* Finance-AssistantTests */,
-				04E8962D2DB68EC000CFEDA8 /* Finance-AssistantUITests */,
+				04E896152DB68EBE00CFEDA8 /* Monex */,
+				04E896232DB68EC000CFEDA8 /* MonexTests */,
+				04E8962D2DB68EC000CFEDA8 /* MonexUITests */,
 				04E896142DB68EBE00CFEDA8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -108,7 +108,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				04E896152DB68EBE00CFEDA8 /* Finance-Assistant */,
+				04E896152DB68EBE00CFEDA8 /* Monex */,
 			);
 			name = "Finance-Assistant";
 			packageProductDependencies = (
@@ -131,7 +131,7 @@
 				04E896222DB68EC000CFEDA8 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				04E896232DB68EC000CFEDA8 /* Finance-AssistantTests */,
+				04E896232DB68EC000CFEDA8 /* MonexTests */,
 			);
 			name = "Finance-AssistantTests";
 			packageProductDependencies = (
@@ -154,7 +154,7 @@
 				04E8962C2DB68EC000CFEDA8 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				04E8962D2DB68EC000CFEDA8 /* Finance-AssistantUITests */,
+				04E8962D2DB68EC000CFEDA8 /* MonexUITests */,
 			);
 			name = "Finance-AssistantUITests";
 			packageProductDependencies = (
@@ -186,7 +186,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 04E8960E2DB68EBE00CFEDA8 /* Build configuration list for PBXProject "Finance-Assistant" */;
+			buildConfigurationList = 04E8960E2DB68EBE00CFEDA8 /* Build configuration list for PBXProject "Monex" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -521,7 +521,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		04E8960E2DB68EBE00CFEDA8 /* Build configuration list for PBXProject "Finance-Assistant" */ = {
+		04E8960E2DB68EBE00CFEDA8 /* Build configuration list for PBXProject "Monex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				04E896322DB68EC000CFEDA8 /* Debug */,

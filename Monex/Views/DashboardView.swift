@@ -313,17 +313,10 @@ struct BudgetCardView: View {
             
             Spacer()
             
-            VStack(alignment: .trailing, spacing: 6) {
-                Text("\(Int(budget.spentPercentage * 100))%")
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(budget.spentPercentage > 0.9 ? .red : budget.getColor())
-                
-                Image(systemName: "chevron.right")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.secondary)
-            }
+            Text("\(Int(budget.spentPercentage * 100))%")
+                .font(.title)
+                .fontWeight(.bold)
+                .foregroundColor(budget.spentPercentage > 0.9 ? .red : budget.getColor())
         }
         .padding()
         .cardStyle()
