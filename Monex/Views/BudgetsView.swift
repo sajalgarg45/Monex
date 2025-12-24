@@ -8,18 +8,25 @@ struct BudgetsView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    // Budget summary cards
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Budget Summary")
-                            .font(.headline)
-                            .padding(.horizontal)
+                    // Header
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Your Budgets")
+                            .font(.system(size: 32, weight: .bold))
+                            .foregroundColor(.primary)
                         
-                        HStack(spacing: 16) {
-                            SummaryCard(title: "Total Budget", value: viewModel.totalBudget, iconName: "banknote.fill", color: .blue)
-                            SummaryCard(title: "Total Spent", value: viewModel.totalSpent, iconName: "arrow.down.circle.fill", color: .red)
-                        }
-                        .padding(.horizontal)
+                        Text("Know how much is just\nenough")
+                            .font(.system(size: 28, weight: .bold))
+                            .foregroundColor(.secondary)
                     }
+                    .padding(.horizontal)
+                    .padding(.top, 8)
+                    
+                    // Budget summary cards
+                    HStack(spacing: 16) {
+                        SummaryCard(title: "Total Budget", value: viewModel.totalBudget, iconName: "banknote.fill", color: .blue)
+                        SummaryCard(title: "Total Spent", value: viewModel.totalSpent, iconName: "arrow.down.circle.fill", color: .red)
+                    }
+                    .padding(.horizontal)
                     
                     // Budgets Section
                     HStack {
@@ -57,7 +64,8 @@ struct BudgetsView: View {
                     endPoint: .bottom
                 )
             )
-            .navigationTitle("Budgets")
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
