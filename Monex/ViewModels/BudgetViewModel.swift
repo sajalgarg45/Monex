@@ -94,7 +94,7 @@ class BudgetViewModel: ObservableObject {
     
     private let userSavePath = FileManager.documentsDirectory.appendingPathComponent("SavedUser")
     
-    private func saveUserData(_ user: User) {
+    func saveUserData(_ user: User) {
         do {
             let data = try JSONEncoder().encode(user)
             try data.write(to: userSavePath, options: [.atomic, .completeFileProtection])

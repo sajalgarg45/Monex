@@ -3,59 +3,182 @@ import SwiftUI
 struct ProfileView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: BudgetViewModel
+    @State private var showingEditProfile = false
+    @State private var alertsEnabled = true
+    @State private var privacySecurityEnabled = true
+    @State private var showingHelpAlert = false
+    @State private var showingAboutAlert = false
+    
+    var userInitials: String {
+        let name = viewModel.currentUser?.name ?? "User"
+        let components = name.split(separator: " ")
+        if components.count >= 2 {
+            let first = String(components[0].prefix(1))
+            let last = String(components[1].prefix(1))
+            return (first + last).uppercased()
+        }
+        return String(name.prefix(2)).uppercased()
+    }
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 25) {
-                    // Profile Header
+                    // Profile Header with Initials Circle
                     VStack(spacing: 15) {
-                        Image(systemName: "person.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 100, height: 100)
-                            .foregroundColor(.blue)
+                        ZStack {
+                            Circle()
+                                .fill(Color.orange)
+                                .frame(width: 100, height: 100)
+                            
+                            Text(userInitials)
+                                .font(.system(size: 40, weight: .bold))
+                                .foregroundColor(.white)
+                        }
                         
                         Text(viewModel.currentUser?.name ?? "User")
                             .font(.title2)
                             .fontWeight(.bold)
-                        
-                        Text(viewModel.currentUser?.email ?? "user@example.com")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
                     }
                     .padding(.bottom, 10)
                     
-                    // Settings Section
+                    // Profile Section
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Settings")
+                        Text("Profile")
                             .font(.headline)
+                            .foregroundColor(.secondary)
                             .padding(.leading)
                         
                         VStack(spacing: 0) {
-                            ProfileMenuRow(title: "Edit Profile", iconName: "person.fill", iconColor: .blue) {
-                                // Navigate to edit profile (not implemented in this example)
+                            Button(action: {
+                                showingEditProfile = true
+                            }) {
+                                HStack {
+                                    Image(systemName: "person.fill")
+                                        .foregroundColor(.blue)
+                                        .frame(width: 30)
+                                    
+                                    Text("Edit Profile")
+                                        .foregroundColor(.primary)
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "pencil")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.vertical, 15)
+                                .padding(.horizontal)
+                            }
+                        }
+                        .background(Color(UIColor.secondarySystemGroupedBackground))
+                        .cornerRadius(12)
+                        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                    }
+                    
+                    // Alerts & Privacy Section
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Preferences")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                            .padding(.leading)
+                        
+                        VStack(spacing: 0) {
+                            HStack {
+                                Image(systemName: "bell.fill")
+                                    .foregroundColor(.orange)
+                                    .frame(width: 30)
+                                
+                                Text("Alerts")
+                                    .foregroundColor(.primary)
+                                
+                                Spacer()
+                                
+                                Toggle("", isOn: $alertsEnabled)
+                                    .labelsHidden()
+                            }
+                            .padding(.vertical, 15)
+                            .padding(.horizontal)
+                            
+                            Divider()
+                                .padding(.leading, 50)
+                            
+                            HStack {
+                                Image(systemName: "lock.fill")
+                                    .foregroundColor(.purple)
+                                    .frame(width: 30)
+                                
+                                Text("Privacy & Security")
+                                    .foregroundColor(.primary)
+                                
+                                Spacer()
+                                
+                                Toggle("", isOn: $privacySecurityEnabled)
+                                    .labelsHidden()
+                            }
+                            .padding(.vertical, 15)
+                            .padding(.horizontal)
+                        }
+                        .background(Color(UIColor.secondarySystemGroupedBackground))
+                        .cornerRadius(12)
+                        .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                    }
+                    
+                    // Help & About Section
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("Support")
+                            .font(.headline)
+                            .foregroundColor(.secondary)
+                            .padding(.leading)
+                        
+                        VStack(spacing: 0) {
+                            Button(action: {
+                                showingHelpAlert = true
+                            }) {
+                                HStack {
+                                    Image(systemName: "questionmark.circle.fill")
+                                        .foregroundColor(.cyan)
+                                        .frame(width: 30)
+                                    
+                                    Text("Help & Support")
+                                        .foregroundColor(.primary)
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.vertical, 15)
+                                .padding(.horizontal)
                             }
                             
-                            ProfileMenuRow(title: "Notifications", iconName: "bell.fill", iconColor: .orange) {
-                                // Navigate to notifications settings
+                            Divider()
+                                .padding(.leading, 50)
+                            
+                            Button(action: {
+                                showingAboutAlert = true
+                            }) {
+                                HStack {
+                                    Image(systemName: "info.circle.fill")
+                                        .foregroundColor(.blue)
+                                        .frame(width: 30)
+                                    
+                                    Text("About")
+                                        .foregroundColor(.primary)
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: "chevron.right")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.vertical, 15)
+                                .padding(.horizontal)
                             }
                             
-                            ProfileMenuRow(title: "Payment Methods", iconName: "creditcard.fill", iconColor: .green) {
-                                // Navigate to payment methods
-                            }
-                            
-                            ProfileMenuRow(title: "Privacy & Security", iconName: "lock.fill", iconColor: .purple) {
-                                // Navigate to privacy settings
-                            }
-                            
-                            ProfileMenuRow(title: "Help & Support", iconName: "questionmark.circle.fill", iconColor: .cyan) {
-                                // Navigate to help
-                            }
-                            
-                            ProfileMenuRow(title: "About", iconName: "info.circle.fill", iconColor: .blue) {
-                                // Navigate to about
-                            }
+                            Divider()
+                                .padding(.leading, 50)
                             
                             Button {
                                 viewModel.logout()
@@ -77,7 +200,6 @@ struct ProfileView: View {
                                 .padding(.vertical, 15)
                                 .padding(.horizontal)
                             }
-                            .background(Color(UIColor.secondarySystemGroupedBackground))
                         }
                         .background(Color(UIColor.secondarySystemGroupedBackground))
                         .cornerRadius(12)
@@ -90,6 +212,89 @@ struct ProfileView: View {
                 .navigationBarTitleDisplayMode(.inline)
             }
             .background(Color(UIColor.systemGroupedBackground))
+            .sheet(isPresented: $showingEditProfile) {
+                EditProfileView(viewModel: viewModel)
+            }
+            .alert("Help & Support", isPresented: $showingHelpAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("For assistance, please contact us at support@monex.com or visit our website.")
+            }
+            .alert("About Monex", isPresented: $showingAboutAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("Monex v1.0\\nA simple and elegant way to manage your finances.\\n\\n© 2025 Monex. All rights reserved.")
+            }
+        }
+    }
+}
+
+// Edit Profile View
+struct EditProfileView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var viewModel: BudgetViewModel
+    @State private var name: String = ""
+    @State private var email: String = ""
+    @State private var password: String = "••••••••"
+    
+    var body: some View {
+        NavigationView {
+            Form {
+                Section(header: Text("Personal Information")) {
+                    HStack {
+                        Text("Name")
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        TextField("Name", text: $name)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    
+                    HStack {
+                        Text("Email")
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        TextField("Email", text: $email)
+                            .multilineTextAlignment(.trailing)
+                            .keyboardType(.emailAddress)
+                            .autocapitalization(.none)
+                    }
+                    
+                    HStack {
+                        Text("Password")
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text(password)
+                            .foregroundColor(.primary)
+                    }
+                }
+            }
+            .navigationTitle("Edit Profile")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Save") {
+                        // Update user data
+                        if var user = viewModel.currentUser {
+                            user.name = name
+                            user.email = email
+                            viewModel.currentUser = user
+                            viewModel.saveUserData(user)
+                        }
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
+            .onAppear {
+                name = viewModel.currentUser?.name ?? ""
+                email = viewModel.currentUser?.email ?? ""
+            }
         }
     }
 }
