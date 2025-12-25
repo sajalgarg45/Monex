@@ -142,6 +142,7 @@ struct ExpensesView: View {
     private func getAllExpenses() -> [ExpenseData] {
         var allExpenses: [ExpenseData] = []
         
+        // Add regular budget expenses
         for budget in viewModel.budgets {
             for expense in budget.expenses {
                 allExpenses.append(
@@ -153,6 +154,18 @@ struct ExpensesView: View {
                     )
                 )
             }
+        }
+        
+        // Add miscellaneous budget expenses
+        for expense in viewModel.miscBudget.expenses {
+            allExpenses.append(
+                ExpenseData(
+                    budget: viewModel.miscBudget,
+                    budgetName: viewModel.miscBudget.name,
+                    budgetColor: Color(red: 78/255, green: 205/255, blue: 196/255),
+                    expense: expense
+                )
+            )
         }
         
         return allExpenses.sorted(by: { $0.expense.date > $1.expense.date })

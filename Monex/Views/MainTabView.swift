@@ -174,7 +174,7 @@ struct DashboardContentView: View {
                 }
                 
                 // Spending Chart
-                SpendingChartView(budgets: viewModel.budgets)
+                SpendingChartView(budgets: viewModel.budgets, miscBudget: viewModel.miscBudget)
                     .padding(.vertical, 4)
                 
                 // Miscellaneous Budget Section
@@ -183,7 +183,7 @@ struct DashboardContentView: View {
                     .fontWeight(.semibold)
                     .padding(.top, 8)
                 
-                NavigationLink(destination: BudgetDetailView(viewModel: viewModel, budget: Binding.constant(viewModel.miscBudget))) {
+                NavigationLink(destination: BudgetDetailView(viewModel: viewModel, budget: $viewModel.miscBudget)) {
                     MiscBudgetCardView(budget: viewModel.miscBudget)
                 }
             }
@@ -245,7 +245,7 @@ struct MonthlyBalanceCard: View {
                             .foregroundColor(.secondary)
                     }
                     
-                    Text("₹\(Int(viewModel.currentUser?.currentBalance ?? 0))")
+                    Text("₹\(Int((viewModel.currentUser?.monthlyStartBalance ?? 0) - viewModel.totalSpent))")
                         .font(.system(size: 36, weight: .bold))
                         .foregroundColor(.primary)
                 }
@@ -364,12 +364,12 @@ struct MiscBudgetCardView: View {
             // Icon
             ZStack {
                 Circle()
-                    .fill(Color.gray.opacity(0.2))
+                    .fill(Color(red: 78/255, green: 205/255, blue: 196/255).opacity(0.2))
                     .frame(width: 50, height: 50)
                 
                 Image(systemName: budget.icon)
                     .font(.system(size: 24))
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color(red: 78/255, green: 205/255, blue: 196/255))
             }
             
             // Budget Info

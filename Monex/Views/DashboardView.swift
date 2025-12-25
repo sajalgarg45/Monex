@@ -21,7 +21,7 @@ struct DashboardView: View {
                     }
                     
                     // Spending Chart
-                    SpendingChartView(budgets: viewModel.budgets)
+                    SpendingChartView(budgets: viewModel.budgets, miscBudget: viewModel.miscBudget)
                         .frame(height: 300)
                         .padding(.vertical)
                     
@@ -126,7 +126,20 @@ struct SummaryCard: View {
 
 struct SpendingChartView: View {
     let budgets: [Budget]
+    let miscBudget: Budget
     @Environment(\.colorScheme) var colorScheme
+    
+    var allBudgetsWithSpending: [Budget] {
+        var allBudgets = budgets.filter({ $0.amount - $0.remainingAmount > 0 })
+        if miscBudget.totalSpent > 0 {
+            allBudgets.append(miscBudget)
+        }
+        return allBudgets
+    }
+    
+    var totalSpent: Double {
+        budgets.reduce(0) { $0 + ($1.amount - $1.remainingAmount) } + miscBudget.totalSpent
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -136,7 +149,7 @@ struct SpendingChartView: View {
             
             VStack(alignment: .leading, spacing: 16) {
                 if #available(iOS 16.0, *) {
-                    if budgets.filter({ $0.amount - $0.remainingAmount > 0 }).isEmpty {
+                    if allBudgetsWithSpending.isEmpty {
                         // Empty state
                         VStack(spacing: 12) {
                             Image(systemName: "chart.pie.fill")
@@ -151,15 +164,18 @@ struct SpendingChartView: View {
                         .frame(height: 180)
                     } else {
                         Chart {
-                            ForEach(budgets.filter({ $0.amount - $0.remainingAmount > 0 })) { budget in
+                            ForEach(allBudgetsWithSpending) { budget in
                                 SectorMark(
-                                    angle: .value("Amount", budget.amount - budget.remainingAmount),
+                                    angle: .value("Amount", budget.isMiscellaneous ? budget.totalSpent : (budget.amount - budget.remainingAmount)),
                                     innerRadius: .ratio(0.65),
                                     angularInset: 2
                                 )
                                 .foregroundStyle(
                                     LinearGradient(
-                                        colors: [
+                                        colors: budget.isMiscellaneous ? [
+                                            Color(red: 78/255, green: 205/255, blue: 196/255),
+                                            Color(red: 78/255, green: 205/255, blue: 196/255).opacity(0.7)
+                                        ] : [
                                             budget.getColor(),
                                             budget.getColor().opacity(0.7)
                                         ],
@@ -178,7 +194,7 @@ struct SpendingChartView: View {
                                     Text("Total")
                                         .font(.caption)
                                         .foregroundColor(.secondary)
-                                    Text("₹\(budgets.reduce(0) { $0 + ($1.amount - $1.remainingAmount) }, specifier: "%.0f")")
+                                    Text("₹\(totalSpent, specifier: "%.0f")")
                                         .font(.title3)
                                         .fontWeight(.bold)
                                         .foregroundColor(.primary)
@@ -194,14 +210,17 @@ struct SpendingChartView: View {
                 }
                 
                 // Legend
-                if !budgets.filter({ $0.amount - $0.remainingAmount > 0 }).isEmpty {
+                if !allBudgetsWithSpending.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
-                        ForEach(budgets.filter({ $0.amount - $0.remainingAmount > 0 })) { budget in
+                        ForEach(allBudgetsWithSpending) { budget in
                             HStack(spacing: 12) {
                                 Circle()
                                     .fill(
                                         LinearGradient(
-                                            colors: [
+                                            colors: budget.isMiscellaneous ? [
+                                                Color(red: 78/255, green: 205/255, blue: 196/255),
+                                                Color(red: 78/255, green: 205/255, blue: 196/255).opacity(0.7)
+                                            ] : [
                                                 budget.getColor(),
                                                 budget.getColor().opacity(0.7)
                                             ],
@@ -218,7 +237,7 @@ struct SpendingChartView: View {
                                 
                                 Spacer()
                                 
-                                Text("₹\(budget.amount - budget.remainingAmount, specifier: "%.0f")")
+                                Text("₹\(budget.isMiscellaneous ? budget.totalSpent : (budget.amount - budget.remainingAmount), specifier: "%.0f")")
                                     .font(.callout)
                                     .fontWeight(.semibold)
                                     .foregroundColor(.secondary)

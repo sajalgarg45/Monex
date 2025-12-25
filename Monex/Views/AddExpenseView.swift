@@ -50,11 +50,8 @@ struct AddExpenseView: View {
                                 note: note
                             )
                             
-                            // Add expense to the budget
-                            budget.expenses.append(newExpense)
-                            
-                            // Update the budget in the view model
-                            viewModel.updateBudget(budget)
+                            // Use viewModel method to add expense
+                            viewModel.addExpense(newExpense, to: budget.id)
                             
                             presentationMode.wrappedValue.dismiss()
                         }

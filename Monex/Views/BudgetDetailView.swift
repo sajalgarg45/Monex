@@ -69,20 +69,22 @@ struct BudgetDetailView: View {
         .navigationTitle(budget.name)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Menu {
-                    Button {
-                        showingEditBudget = true
+                if !budget.isMiscellaneous {
+                    Menu {
+                        Button {
+                            showingEditBudget = true
+                        } label: {
+                            Label("Edit Budget", systemImage: "pencil")
+                        }
+                        
+                        Button(role: .destructive) {
+                            showingDeleteAlert = true
+                        } label: {
+                            Label("Delete Budget", systemImage: "trash")
+                        }
                     } label: {
-                        Label("Edit Budget", systemImage: "pencil")
+                        Image(systemName: "ellipsis.circle")
                     }
-                    
-                    Button(role: .destructive) {
-                        showingDeleteAlert = true
-                    } label: {
-                        Label("Delete Budget", systemImage: "trash")
-                    }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
                 }
             }
         }
