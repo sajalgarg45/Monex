@@ -32,9 +32,9 @@ class BudgetViewModel: ObservableObject {
         // Don't load sample data by default - let user create their own budgets
     }
     
-    func signup(name: String, email: String, password: String) {
+    func signup(firstName: String, lastName: String, email: String, password: String) {
         // Create new user
-        let newUser = User(id: UUID().uuidString, name: name, email: email)
+        let newUser = User(id: UUID().uuidString, firstName: firstName, lastName: lastName, email: email)
         
         // Save user data
         saveUserData(newUser)

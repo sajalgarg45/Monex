@@ -10,36 +10,38 @@ struct ProfileView: View {
     @State private var showingAboutAlert = false
     
     var userInitials: String {
-        let name = viewModel.currentUser?.name ?? "User"
-        let components = name.split(separator: " ")
-        if components.count >= 2 {
-            let first = String(components[0].prefix(1))
-            let last = String(components[1].prefix(1))
-            return (first + last).uppercased()
-        }
-        return String(name.prefix(2)).uppercased()
+        guard let user = viewModel.currentUser else { return "NA" }
+        let first = String(user.firstName.prefix(1))
+        let last = String(user.lastName.prefix(1))
+        return (first + last).uppercased()
     }
     
     var body: some View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 25) {
-                    // Profile Header with Initials Circle
-                    VStack(spacing: 15) {
+                    // Profile Header Card - Horizontal Layout
+                    HStack(spacing: 20) {
                         ZStack {
                             Circle()
                                 .fill(Color.orange)
-                                .frame(width: 100, height: 100)
+                                .frame(width: 80, height: 80)
                             
                             Text(userInitials)
-                                .font(.system(size: 40, weight: .bold))
+                                .font(.system(size: 32, weight: .bold))
                                 .foregroundColor(.white)
                         }
                         
                         Text(viewModel.currentUser?.name ?? "User")
-                            .font(.title2)
-                            .fontWeight(.bold)
+                            .font(.system(size: 28, weight: .bold))
+                        
+                        Spacer()
                     }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color(UIColor.secondarySystemGroupedBackground))
+                    .cornerRadius(16)
+                    .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
                     .padding(.bottom, 10)
                     
                     // Profile Section
@@ -233,19 +235,29 @@ struct ProfileView: View {
 struct EditProfileView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: BudgetViewModel
-    @State private var name: String = ""
+    @State private var firstName: String = ""
+    @State private var lastName: String = ""
     @State private var email: String = ""
-    @State private var password: String = "••••••••"
+    @State private var password: String = ""
+    @State private var showPassword: Bool = false
     
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("Personal Information")) {
                     HStack {
-                        Text("Name")
+                        Text("First Name")
                             .foregroundColor(.secondary)
                         Spacer()
-                        TextField("Name", text: $name)
+                        TextField("First Name", text: $firstName)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    
+                    HStack {
+                        Text("Last Name")
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        TextField("Last Name", text: $lastName)
                             .multilineTextAlignment(.trailing)
                     }
                     
@@ -263,8 +275,22 @@ struct EditProfileView: View {
                         Text("Password")
                             .foregroundColor(.secondary)
                         Spacer()
-                        Text(password)
-                            .foregroundColor(.primary)
+                        Group {
+                            if showPassword {
+                                TextField("Password", text: $password)
+                                    .multilineTextAlignment(.trailing)
+                            } else {
+                                SecureField("Password", text: $password)
+                                    .multilineTextAlignment(.trailing)
+                            }
+                        }
+                        Button(action: {
+                            showPassword.toggle()
+                        }) {
+                            Image(systemName: showPassword ? "eye.slash.fill" : "eye.fill")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        }
                     }
                 }
             }
@@ -281,7 +307,8 @@ struct EditProfileView: View {
                     Button("Save") {
                         // Update user data
                         if var user = viewModel.currentUser {
-                            user.name = name
+                            user.firstName = firstName
+                            user.lastName = lastName
                             user.email = email
                             viewModel.currentUser = user
                             viewModel.saveUserData(user)
@@ -292,8 +319,10 @@ struct EditProfileView: View {
                 }
             }
             .onAppear {
-                name = viewModel.currentUser?.name ?? ""
+                firstName = viewModel.currentUser?.firstName ?? ""
+                lastName = viewModel.currentUser?.lastName ?? ""
                 email = viewModel.currentUser?.email ?? ""
+                password = "" // Leave empty for security, user can set new password
             }
         }
     }

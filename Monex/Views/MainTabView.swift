@@ -154,7 +154,7 @@ struct DashboardContentView: View {
             VStack(alignment: .leading, spacing: 22) {
                 // Greeting Header
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("\(greeting), \(viewModel.currentUser?.name ?? "User")")
+                    Text("\(greeting), \(viewModel.currentUser?.firstName ?? "User")")
                         .font(.system(size: 32, weight: .bold))
                         .foregroundColor(.primary)
                     

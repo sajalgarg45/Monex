@@ -3,7 +3,8 @@ import SwiftUI
 struct SignupView: View {
     @ObservedObject var viewModel: BudgetViewModel
     @Environment(\.presentationMode) var presentationMode
-    @State private var name = ""
+    @State private var firstName = ""
+    @State private var lastName = ""
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
@@ -35,7 +36,13 @@ struct SignupView: View {
                 
                 // Signup form
                 VStack(spacing: 20) {
-                    TextField("Full Name", text: $name)
+                    TextField("First Name", text: $firstName)
+                        .autocapitalization(.words)
+                        .padding()
+                        .background(Color(UIColor.secondarySystemGroupedBackground))
+                        .cornerRadius(16)
+                    
+                    TextField("Last Name", text: $lastName)
                         .autocapitalization(.words)
                         .padding()
                         .background(Color(UIColor.secondarySystemGroupedBackground))
@@ -118,9 +125,15 @@ struct SignupView: View {
     
     private func signup() {
         // Validation
-        guard !name.isEmpty else {
+        guard !firstName.isEmpty else {
             showError = true
-            errorMessage = "Please enter your name"
+            errorMessage = "Please enter your first name"
+            return
+        }
+        
+        guard !lastName.isEmpty else {
+            showError = true
+            errorMessage = "Please enter your last name"
             return
         }
         
@@ -159,7 +172,7 @@ struct SignupView: View {
         
         // Simulate signup process
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            viewModel.signup(name: name, email: email, password: password)
+            viewModel.signup(firstName: firstName, lastName: lastName, email: email, password: password)
             isLoading = false
             presentationMode.wrappedValue.dismiss()
         }
