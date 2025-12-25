@@ -56,7 +56,7 @@ struct PrimaryButton: ViewModifier {
             .padding(.vertical, 12)
             .background(color)
             .foregroundColor(.white)
-            .cornerRadius(10)
+            .cornerRadius(18)
             .shadow(color: color.opacity(0.3), radius: 5, x: 0, y: 3)
     }
 } 

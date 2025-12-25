@@ -7,13 +7,16 @@ class BudgetViewModel: ObservableObject {
     @Published var currentUser: User?
     @Published var miscBudget: Budget
     
-    private let savePath = FileManager.documentsDirectory.appendingPathComponent("SavedBudgets")
-    private let miscBudgetPath = FileManager.documentsDirectory.appendingPathComponent("MiscBudget")
+    private func savePath(for userId: String) -> URL {
+        FileManager.documentsDirectory.appendingPathComponent("SavedBudgets_\(userId)")
+    }
+    
+    private func miscBudgetPath(for userId: String) -> URL {
+        FileManager.documentsDirectory.appendingPathComponent("MiscBudget_\(userId)")
+    }
     
     init() {
         miscBudget = Budget(name: "Miscellaneous", amount: 0, icon: "square.grid.2x2.fill", color: "gray", isMiscellaneous: true)
-        loadData()
-        loadMiscBudget()
         checkLoginState()
     }
     
@@ -21,6 +24,8 @@ class BudgetViewModel: ObservableObject {
         if let savedUser = loadUserData() {
             isLoggedIn = true
             currentUser = savedUser
+            loadData(for: savedUser.id)
+            loadMiscBudget(for: savedUser.id)
         }
     }
     
@@ -42,6 +47,12 @@ class BudgetViewModel: ObservableObject {
         // Auto login after signup
         isLoggedIn = true
         currentUser = newUser
+        
+        // Initialize empty data for new user
+        budgets = []
+        miscBudget = Budget(name: "Miscellaneous", amount: 0, icon: "square.grid.2x2.fill", color: "gray", isMiscellaneous: true)
+        saveData()
+        saveMiscBudget()
     }
     
     func login(email: String, password: String) -> Bool {
@@ -50,8 +61,8 @@ class BudgetViewModel: ObservableObject {
             // Verify email matches
             if savedUser.email.lowercased() == email.lowercased() {
                 isLoggedIn = true
-                currentUser = savedUser
-                return true
+                currentUser = savedUser;                loadData(for: savedUser.id)
+                loadMiscBudget(for: savedUser.id);                return true
             }
         }
         return false
@@ -59,8 +70,11 @@ class BudgetViewModel: ObservableObject {
     
     func logout() {
         saveData()
+        saveMiscBudget()
         isLoggedIn = false
         currentUser = nil
+        budgets = []
+        miscBudget = Budget(name: "Miscellaneous", amount: 0, icon: "square.grid.2x2.fill", color: "gray", isMiscellaneous: true)
     }
     
     func updateMonthlyBalance(amount: Double, startDate: Date = Date()) {
@@ -188,17 +202,18 @@ class BudgetViewModel: ObservableObject {
     // MARK: - Persistence
     
     private func saveData() {
+        guard let userId = currentUser?.id else { return }
         do {
             let data = try JSONEncoder().encode(budgets)
-            try data.write(to: savePath, options: [.atomic, .completeFileProtection])
+            try data.write(to: savePath(for: userId), options: [.atomic, .completeFileProtection])
         } catch {
             print("Failed to save budgets: \(error.localizedDescription)")
         }
     }
     
-    private func loadData() {
+    private func loadData(for userId: String) {
         do {
-            let data = try Data(contentsOf: savePath)
+            let data = try Data(contentsOf: savePath(for: userId))
             budgets = try JSONDecoder().decode([Budget].self, from: data)
         } catch {
             print("No saved budgets found: \(error.localizedDescription)")
@@ -207,20 +222,22 @@ class BudgetViewModel: ObservableObject {
     }
     
     private func saveMiscBudget() {
+        guard let userId = currentUser?.id else { return }
         do {
             let data = try JSONEncoder().encode(miscBudget)
-            try data.write(to: miscBudgetPath, options: [.atomic, .completeFileProtection])
+            try data.write(to: miscBudgetPath(for: userId), options: [.atomic, .completeFileProtection])
         } catch {
             print("Unable to save misc budget: \(error.localizedDescription)")
         }
     }
     
-    private func loadMiscBudget() {
+    private func loadMiscBudget(for userId: String) {
         do {
-            let data = try Data(contentsOf: miscBudgetPath)
+            let data = try Data(contentsOf: miscBudgetPath(for: userId))
             miscBudget = try JSONDecoder().decode(Budget.self, from: data)
         } catch {
             // Keep default misc budget if load fails
+            miscBudget = Budget(name: "Miscellaneous", amount: 0, icon: "square.grid.2x2.fill", color: "gray", isMiscellaneous: true)
         }
     }
 } 

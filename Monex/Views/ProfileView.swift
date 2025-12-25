@@ -40,7 +40,7 @@ struct ProfileView: View {
                     .padding()
                     .frame(maxWidth: .infinity)
                     .background(Color(UIColor.secondarySystemGroupedBackground))
-                    .cornerRadius(16)
+                    .cornerRadius(18)
                     .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
                     .padding(.bottom, 10)
                     
@@ -74,7 +74,7 @@ struct ProfileView: View {
                             }
                         }
                         .background(Color(UIColor.secondarySystemGroupedBackground))
-                        .cornerRadius(12)
+                        .cornerRadius(18)
                         .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
                     }
                     
@@ -122,7 +122,7 @@ struct ProfileView: View {
                             .padding(.horizontal)
                         }
                         .background(Color(UIColor.secondarySystemGroupedBackground))
-                        .cornerRadius(12)
+                        .cornerRadius(18)
                         .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
                     }
                     
@@ -204,7 +204,7 @@ struct ProfileView: View {
                             }
                         }
                         .background(Color(UIColor.secondarySystemGroupedBackground))
-                        .cornerRadius(12)
+                        .cornerRadius(18)
                         .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
                     }
                 }
@@ -352,7 +352,7 @@ struct ProfileStatCard: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color(UIColor.secondarySystemGroupedBackground))
-        .cornerRadius(12)
+        .cornerRadius(18)
         .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
     }
 }

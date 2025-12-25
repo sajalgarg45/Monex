@@ -73,12 +73,20 @@ struct DashboardView: View {
     }
     
     func binding(for budget: Budget) -> Binding<Budget> {
-        guard let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }) else {
-            fatalError("Budget not found")
-        }
         return Binding(
-            get: { viewModel.budgets[index] },
-            set: { viewModel.budgets[index] = $0 }
+            get: {
+                if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }),
+                   index < viewModel.budgets.count {
+                    return viewModel.budgets[index]
+                }
+                return budget
+            },
+            set: { newValue in
+                if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }),
+                   index < viewModel.budgets.count {
+                    viewModel.budgets[index] = newValue
+                }
+            }
         )
     }
 }
@@ -108,10 +116,16 @@ struct SummaryCard: View {
                 Text("\(Int(value))")
                     .font(.system(size: 26, weight: .semibold, design: .rounded))
                     .foregroundColor(.primary)
+                    .frame(minWidth: 50, alignment: .leading)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
             } else {
                 Text("₹\(value, specifier: "%.0f")")
                     .font(.system(size: 28, weight: .semibold, design: .rounded))
                     .foregroundColor(.primary)
+                    .frame(minWidth: 80, alignment: .leading)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
             }
         }
         .padding()

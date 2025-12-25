@@ -122,12 +122,20 @@ struct MainTabView: View {
     
     // Helper to get binding for a budget
     func binding(for budget: Budget) -> Binding<Budget> {
-        guard let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }) else {
-            fatalError("Budget not found")
-        }
         return Binding(
-            get: { viewModel.budgets[index] },
-            set: { viewModel.budgets[index] = $0 }
+            get: {
+                if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }),
+                   index < viewModel.budgets.count {
+                    return viewModel.budgets[index]
+                }
+                return budget
+            },
+            set: { newValue in
+                if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }),
+                   index < viewModel.budgets.count {
+                    viewModel.budgets[index] = newValue
+                }
+            }
         )
     }
 }
@@ -205,12 +213,20 @@ struct DashboardContentView: View {
     
     // Helper to get binding for a budget
     func binding(for budget: Budget) -> Binding<Budget> {
-        guard let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }) else {
-            fatalError("Budget not found")
-        }
         return Binding(
-            get: { viewModel.budgets[index] },
-            set: { viewModel.budgets[index] = $0 }
+            get: {
+                if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }),
+                   index < viewModel.budgets.count {
+                    return viewModel.budgets[index]
+                }
+                return budget
+            },
+            set: { newValue in
+                if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }),
+                   index < viewModel.budgets.count {
+                    viewModel.budgets[index] = newValue
+                }
+            }
         )
     }
 }
@@ -257,6 +273,9 @@ struct MonthlyBalanceCard: View {
                         Text("₹\(Int((viewModel.currentUser?.monthlyStartBalance ?? 0) - viewModel.totalSpent))")
                             .font(.system(size: 36, weight: .bold))
                             .foregroundColor(.primary)
+                            .frame(minWidth: 120, alignment: .leading)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.4)
                     }
                 }
                 
@@ -319,7 +338,7 @@ struct EditBalanceSheet: View {
                     .font(.system(size: 24, weight: .semibold))
                     .padding()
                     .background(Color(UIColor.secondarySystemBackground))
-                    .cornerRadius(12)
+                    .cornerRadius(18)
                 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Start Date")
@@ -330,7 +349,7 @@ struct EditBalanceSheet: View {
                         .datePickerStyle(.graphical)
                         .padding()
                         .background(Color(UIColor.secondarySystemBackground))
-                        .cornerRadius(12)
+                        .cornerRadius(18)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
@@ -404,6 +423,9 @@ struct MiscBudgetCardView: View {
                 Text("₹\(Int(budget.totalSpent))")
                     .font(.system(size: 20, weight: .bold))
                     .foregroundColor(.primary)
+                    .frame(minWidth: 80, alignment: .trailing)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
             }
         }
         .padding()

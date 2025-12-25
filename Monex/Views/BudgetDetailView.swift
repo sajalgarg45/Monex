@@ -2,6 +2,7 @@ import SwiftUI
 import Charts
 
 struct BudgetDetailView: View {
+    @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: BudgetViewModel
     @Binding var budget: Budget
     @State private var showingAddExpense = false
@@ -103,7 +104,10 @@ struct BudgetDetailView: View {
             Button("Cancel", role: .cancel) { }
             Button("Delete", role: .destructive) {
                 if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }) {
-                    viewModel.deleteBudget(at: IndexSet(integer: index))
+                    presentationMode.wrappedValue.dismiss()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        viewModel.deleteBudget(at: IndexSet(integer: index))
+                    }
                 }
             }
         } message: {
@@ -187,6 +191,9 @@ struct BudgetInfoCard: View {
                         .font(.title2)
                         .fontWeight(.bold)
                         .foregroundColor(budget.isMiscellaneous ? .primary : (budget.remainingAmount < budget.amount * 0.2 ? .red : .primary))
+                        .frame(minWidth: 100, alignment: .trailing)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.5)
                 }
             }
             

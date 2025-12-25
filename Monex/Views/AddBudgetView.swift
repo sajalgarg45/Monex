@@ -109,7 +109,7 @@ struct IconButton: View {
                 .frame(width: 50, height: 50)
                 .background(isSelected ? getColor() : Color.gray.opacity(0.2))
                 .foregroundColor(isSelected ? .white : .primary)
-                .cornerRadius(12)
+                .cornerRadius(18)
         }
         .buttonStyle(PlainButtonStyle()) // Add this to prevent default button behavior
     }

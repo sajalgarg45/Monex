@@ -24,13 +24,13 @@ struct BudgetsView: View {
                     // Budget summary cards
                     HStack(spacing: 16) {
                         SummaryCard(title: "Total Budget", value: viewModel.totalBudget, iconName: "banknote.fill", color: .blue)
-                        SummaryCard(title: "Total Spent", value: viewModel.totalSpent - viewModel.miscBudget.totalSpent, iconName: "arrow.down.circle.fill", color: .red)
+                        SummaryCard(title: "Budgets", value: Double(viewModel.budgets.count), iconName: "folder.fill", color: .orange, isCount: true)
                     }
                     .padding(.horizontal)
                     
                     HStack(spacing: 16) {
+                        SummaryCard(title: "Total Spent", value: viewModel.totalSpent - viewModel.miscBudget.totalSpent, iconName: "arrow.down.circle.fill", color: .red)
                         SummaryCard(title: "Remaining", value: viewModel.totalRemaining, iconName: "arrow.up.circle.fill", color: .green)
-                        SummaryCard(title: "Budgets", value: Double(viewModel.budgets.count), iconName: "folder.fill", color: .orange, isCount: true)
                     }
                     .padding(.horizontal)
                     
@@ -88,13 +88,21 @@ struct BudgetsView: View {
     }
     
     // Helper to get binding for a budget
-    func binding(for budget: Budget) -> Binding<Budget> {
-        guard let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }) else {
-            fatalError("Budget not found")
-        }
+     func binding(for budget: Budget) -> Binding<Budget> {
         return Binding(
-            get: { viewModel.budgets[index] },
-            set: { viewModel.budgets[index] = $0 }
+            get: {
+                if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }),
+                   index < viewModel.budgets.count {
+                    return viewModel.budgets[index]
+                }
+                return budget
+            },
+            set: { newValue in
+                if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }),
+                   index < viewModel.budgets.count {
+                    viewModel.budgets[index] = newValue
+                }
+            }
         )
     }
 }

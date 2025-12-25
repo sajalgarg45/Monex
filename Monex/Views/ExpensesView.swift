@@ -48,7 +48,7 @@ struct ExpensesView: View {
                             .frame(maxWidth: .infinity)
                             .padding(40)
                             .background(Color(UIColor.systemBackground))
-                            .cornerRadius(12)
+                            .cornerRadius(18)
                             .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
                             .padding(.horizontal)
                             .padding(.top)
@@ -306,7 +306,7 @@ struct ExpenseListItem: View {
         }
         .padding()
         .background(Color(UIColor.systemBackground))
-        .cornerRadius(12)
+        .cornerRadius(18)
         .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
         .padding(.horizontal)
     }
