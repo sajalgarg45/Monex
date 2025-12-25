@@ -8,6 +8,7 @@ struct Budget: Identifiable, Codable {
     var icon: String
     var color: String
     var expenses: [Expense]
+    var isMiscellaneous: Bool
     
     var remainingAmount: Double {
         return amount - expenses.reduce(0) { $0 + $1.amount }
@@ -17,13 +18,18 @@ struct Budget: Identifiable, Codable {
         return amount > 0 ? (amount - remainingAmount) / amount : 0
     }
     
-    init(id: UUID = UUID(), name: String, amount: Double, icon: String, color: String, expenses: [Expense] = []) {
+    var totalSpent: Double {
+        return expenses.reduce(0) { $0 + $1.amount }
+    }
+    
+    init(id: UUID = UUID(), name: String, amount: Double, icon: String, color: String, expenses: [Expense] = [], isMiscellaneous: Bool = false) {
         self.id = id
         self.name = name
         self.amount = amount
         self.icon = icon
         self.color = color
         self.expenses = expenses
+        self.isMiscellaneous = isMiscellaneous
     }
     
     // Helper to get Color from stored string

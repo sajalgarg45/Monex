@@ -5,11 +5,15 @@ class BudgetViewModel: ObservableObject {
     @Published var budgets: [Budget] = []
     @Published var isLoggedIn: Bool = false
     @Published var currentUser: User?
+    @Published var miscBudget: Budget
     
     private let savePath = FileManager.documentsDirectory.appendingPathComponent("SavedBudgets")
+    private let miscBudgetPath = FileManager.documentsDirectory.appendingPathComponent("MiscBudget")
     
     init() {
+        miscBudget = Budget(name: "Miscellaneous", amount: 0, icon: "square.grid.2x2.fill", color: "gray", isMiscellaneous: true)
         loadData()
+        loadMiscBudget()
         checkLoginState()
     }
     
@@ -69,6 +73,14 @@ class BudgetViewModel: ObservableObject {
         
         currentUser = user
         saveUserData(user)
+        objectWillChange.send()
+    }
+    
+    func recalculateCurrentBalance() {
+        guard var user = currentUser else { return }
+        user.currentBalance = user.monthlyStartBalance - totalSpent
+        currentUser = user
+        saveUserData(user)
     }
     
     func updateCurrentBalance() {
@@ -122,25 +134,39 @@ class BudgetViewModel: ObservableObject {
     // MARK: - Expense Management
     
     func addExpense(_ expense: Expense, to budgetId: UUID) {
-        if let index = budgets.firstIndex(where: { $0.id == budgetId }) {
+        if budgetId == miscBudget.id {
+            miscBudget.expenses.append(expense)
+            saveMiscBudget()
+        } else if let index = budgets.firstIndex(where: { $0.id == budgetId }) {
             budgets[index].expenses.append(expense)
             saveData()
         }
+        recalculateCurrentBalance()
     }
     
     func deleteExpense(at indexSet: IndexSet, from budgetId: UUID) {
-        if let index = budgets.firstIndex(where: { $0.id == budgetId }) {
+        if budgetId == miscBudget.id {
+            miscBudget.expenses.remove(atOffsets: indexSet)
+            saveMiscBudget()
+        } else if let index = budgets.firstIndex(where: { $0.id == budgetId }) {
             budgets[index].expenses.remove(atOffsets: indexSet)
             saveData()
         }
+        recalculateCurrentBalance()
     }
     
     func updateExpense(_ expense: Expense, in budgetId: UUID) {
-        if let budgetIndex = budgets.firstIndex(where: { $0.id == budgetId }),
+        if budgetId == miscBudget.id {
+            if let expenseIndex = miscBudget.expenses.firstIndex(where: { $0.id == expense.id }) {
+                miscBudget.expenses[expenseIndex] = expense
+                saveMiscBudget()
+            }
+        } else if let budgetIndex = budgets.firstIndex(where: { $0.id == budgetId }),
            let expenseIndex = budgets[budgetIndex].expenses.firstIndex(where: { $0.id == expense.id }) {
             budgets[budgetIndex].expenses[expenseIndex] = expense
             saveData()
         }
+        recalculateCurrentBalance()
     }
     
     // MARK: - Data Summary
@@ -150,7 +176,9 @@ class BudgetViewModel: ObservableObject {
     }
     
     var totalSpent: Double {
-        budgets.reduce(0) { $0 + ($1.amount - $1.remainingAmount) }
+        let regularSpent = budgets.reduce(0) { $0 + ($1.amount - $1.remainingAmount) }
+        let miscSpent = miscBudget.totalSpent
+        return regularSpent + miscSpent
     }
     
     var totalRemaining: Double {
@@ -175,6 +203,24 @@ class BudgetViewModel: ObservableObject {
         } catch {
             print("No saved budgets found: \(error.localizedDescription)")
             budgets = []
+        }
+    }
+    
+    private func saveMiscBudget() {
+        do {
+            let data = try JSONEncoder().encode(miscBudget)
+            try data.write(to: miscBudgetPath, options: [.atomic, .completeFileProtection])
+        } catch {
+            print("Unable to save misc budget: \(error.localizedDescription)")
+        }
+    }
+    
+    private func loadMiscBudget() {
+        do {
+            let data = try Data(contentsOf: miscBudgetPath)
+            miscBudget = try JSONDecoder().decode(Budget.self, from: data)
+        } catch {
+            // Keep default misc budget if load fails
         }
     }
 } 

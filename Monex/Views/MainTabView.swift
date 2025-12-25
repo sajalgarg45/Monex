@@ -170,30 +170,21 @@ struct DashboardContentView: View {
                 // Summary Cards
                 HStack(spacing: 16) {
                     SummaryCard(title: "Total Spent", value: viewModel.totalSpent, iconName: "arrow.down.circle.fill", color: .red)
-                    SummaryCard(title: "Remaining", value: viewModel.totalRemaining, iconName: "arrow.up.circle.fill", color: .green)
+                    SummaryCard(title: "Expenses", value: Double(totalExpensesCount(viewModel: viewModel)), iconName: "list.bullet.circle.fill", color: .orange, isCount: true)
                 }
                 
                 // Spending Chart
                 SpendingChartView(budgets: viewModel.budgets)
                     .padding(.vertical, 4)
                 
-                // Budgets Section
-                Text("Your Budgets")
+                // Miscellaneous Budget Section
+                Text("Miscellaneous")
                     .font(.title3)
                     .fontWeight(.semibold)
                     .padding(.top, 8)
                 
-                // Budget List
-                if viewModel.budgets.isEmpty {
-                    EmptyBudgetView()
-                } else {
-                    VStack(spacing: 16) {
-                        ForEach(viewModel.budgets) { budget in
-                            NavigationLink(destination: BudgetDetailView(viewModel: viewModel, budget: binding(for: budget))) {
-                                BudgetCardView(budget: budget)
-                            }
-                        }
-                    }
+                NavigationLink(destination: BudgetDetailView(viewModel: viewModel, budget: Binding.constant(viewModel.miscBudget))) {
+                    MiscBudgetCardView(budget: viewModel.miscBudget)
                 }
             }
             .padding(.horizontal)
@@ -222,6 +213,13 @@ struct DashboardContentView: View {
             set: { viewModel.budgets[index] = $0 }
         )
     }
+}
+
+// Helper function to get total expenses count
+func totalExpensesCount(viewModel: BudgetViewModel) -> Int {
+    let regularExpenses = viewModel.budgets.reduce(0) { $0 + $1.expenses.count }
+    let miscExpenses = viewModel.miscBudget.expenses.count
+    return regularExpenses + miscExpenses
 }
 
 struct MonthlyBalanceCard: View {
@@ -354,6 +352,57 @@ struct EditBalanceSheet: View {
             balanceText = "\(Int(viewModel.currentUser?.monthlyStartBalance ?? 0))"
             selectedDate = viewModel.currentUser?.balanceStartDate ?? Date()
         }
+    }
+}
+
+struct MiscBudgetCardView: View {
+    let budget: Budget
+    @Environment(\.colorScheme) var colorScheme
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            // Icon
+            ZStack {
+                Circle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(width: 50, height: 50)
+                
+                Image(systemName: budget.icon)
+                    .font(.system(size: 24))
+                    .foregroundColor(.gray)
+            }
+            
+            // Budget Info
+            VStack(alignment: .leading, spacing: 6) {
+                Text(budget.name)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.primary)
+                
+                Text("No limit")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            // Amount Spent
+            VStack(alignment: .trailing, spacing: 4) {
+                Text("Spent")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Text("₹\(Int(budget.totalSpent))")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundColor(.primary)
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color(UIColor.secondarySystemGroupedBackground))
+        )
+        .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.3 : 0.05), radius: 8, x: 0, y: 2)
     }
 }
 

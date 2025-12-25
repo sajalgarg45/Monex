@@ -24,7 +24,13 @@ struct BudgetsView: View {
                     // Budget summary cards
                     HStack(spacing: 16) {
                         SummaryCard(title: "Total Budget", value: viewModel.totalBudget, iconName: "banknote.fill", color: .blue)
-                        SummaryCard(title: "Total Spent", value: viewModel.totalSpent, iconName: "arrow.down.circle.fill", color: .red)
+                        SummaryCard(title: "Total Spent", value: viewModel.totalSpent - viewModel.miscBudget.totalSpent, iconName: "arrow.down.circle.fill", color: .red)
+                    }
+                    .padding(.horizontal)
+                    
+                    HStack(spacing: 16) {
+                        SummaryCard(title: "Remaining", value: viewModel.totalRemaining, iconName: "arrow.up.circle.fill", color: .green)
+                        SummaryCard(title: "Budgets", value: Double(viewModel.budgets.count), iconName: "folder.fill", color: .orange, isCount: true)
                     }
                     .padding(.horizontal)
                     

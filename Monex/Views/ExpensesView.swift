@@ -26,13 +26,6 @@ struct ExpensesView: View {
                         .padding(.horizontal)
                         .padding(.top, 8)
                         
-                        // Summary cards
-                        HStack(spacing: 16) {
-                            SummaryCard(title: "Total Spent", value: viewModel.totalSpent, iconName: "arrow.down.circle.fill", color: .red)
-                            SummaryCard(title: "Expenses", value: Double(getTotalExpenseCount()), iconName: "creditcard.fill", color: .blue, isCount: true)
-                        }
-                        .padding(.horizontal)
-                        
                         // Recent expenses section
                         VStack(alignment: .leading, spacing: 12) {
                         if getAllExpenses().isEmpty {
