@@ -25,6 +25,7 @@ struct MainTabView: View {
                     
                     DashboardContentView(viewModel: viewModel)
                 }
+                .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
@@ -41,6 +42,7 @@ struct MainTabView: View {
                     NotificationsView(viewModel: viewModel)
                 }
             }
+            .navigationViewStyle(.stack)
             .tabItem {
                 Label("Dashboard", systemImage: "house.fill")
             }
@@ -162,6 +164,9 @@ struct DashboardContentView: View {
                 }
                 .padding(.top, 8)
                 
+                // Monthly Balance Card
+                MonthlyBalanceCard(viewModel: viewModel)
+                
                 // Summary Cards
                 HStack(spacing: 16) {
                     SummaryCard(title: "Total Budget", value: viewModel.totalBudget, iconName: "banknote.fill", color: .blue)
@@ -221,6 +226,126 @@ struct DashboardContentView: View {
             get: { viewModel.budgets[index] },
             set: { viewModel.budgets[index] = $0 }
         )
+    }
+}
+
+struct MonthlyBalanceCard: View {
+    @ObservedObject var viewModel: BudgetViewModel
+    @State private var showingEditSheet = false
+    
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM dd"
+        return formatter
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Account Balance")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    Text("₹\(Int(viewModel.currentUser?.currentBalance ?? 0))")
+                        .font(.system(size: 36, weight: .bold))
+                        .foregroundColor(.primary)
+                }
+                
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(dateFormatter.string(from: viewModel.currentUser?.balanceStartDate ?? Date()))
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    
+                    Text("₹\(Int(viewModel.currentUser?.monthlyStartBalance ?? 0))")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    
+                    Button(action: {
+                        showingEditSheet = true
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "pencil")
+                                .font(.caption2)
+                            Text("Edit")
+                                .font(.caption)
+                        }
+                        .foregroundColor(.blue)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.blue.opacity(0.1))
+                        .cornerRadius(6)
+                    }
+                    .padding(.top, 4)
+                }
+            }
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity)
+        .background(Color(UIColor.secondarySystemGroupedBackground))
+        .cornerRadius(20)
+        .sheet(isPresented: $showingEditSheet) {
+            EditBalanceSheet(viewModel: viewModel)
+        }
+    }
+}
+
+struct EditBalanceSheet: View {
+    @ObservedObject var viewModel: BudgetViewModel
+    @Environment(\.presentationMode) var presentationMode
+    @State private var balanceText = ""
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 24) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Monthly Starting Balance")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    
+                    Text("Enter your account balance at the start of this month")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.top)
+                
+                TextField("Amount", text: $balanceText)
+                    .keyboardType(.numberPad)
+                    .font(.system(size: 24, weight: .semibold))
+                    .padding()
+                    .background(Color(UIColor.secondarySystemBackground))
+                    .cornerRadius(12)
+                
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Edit Balance")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Save") {
+                        if let amount = Double(balanceText) {
+                            viewModel.updateMonthlyBalance(amount: amount)
+                            presentationMode.wrappedValue.dismiss()
+                        }
+                    }
+                    .fontWeight(.semibold)
+                    .disabled(balanceText.isEmpty)
+                }
+            }
+        }
+        .onAppear {
+            balanceText = "\(Int(viewModel.currentUser?.monthlyStartBalance ?? 0))"
+        }
     }
 }
 

@@ -18,6 +18,9 @@ struct SignupView: View {
             
             ScrollView {
                 VStack(spacing: 25) {
+                Spacer()
+                    .frame(height: 50)
+                
                 // Header
                 VStack(spacing: 12) {
                     Text("Create Account")

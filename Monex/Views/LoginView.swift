@@ -15,6 +15,8 @@ struct LoginView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 25) {
+                Spacer()
+                
                 // App logo and title
                 VStack(spacing: 12) {
                     Text("Monex")

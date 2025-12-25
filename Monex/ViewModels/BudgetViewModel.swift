@@ -59,6 +59,32 @@ class BudgetViewModel: ObservableObject {
         currentUser = nil
     }
     
+    func updateMonthlyBalance(amount: Double) {
+        guard var user = currentUser else { return }
+        
+        // Check if it's a new month
+        let calendar = Calendar.current
+        let now = Date()
+        if !calendar.isDate(user.balanceStartDate, equalTo: now, toGranularity: .month) {
+            // New month - reset the start date and balance
+            user.balanceStartDate = calendar.startOfDay(for: now)
+            user.monthlyStartBalance = amount
+        } else {
+            user.monthlyStartBalance = amount
+        }
+        
+        user.currentBalance = amount - totalSpent
+        currentUser = user
+        saveUserData(user)
+    }
+    
+    func updateCurrentBalance() {
+        guard var user = currentUser else { return }
+        user.currentBalance = user.monthlyStartBalance - totalSpent
+        currentUser = user
+        saveUserData(user)
+    }
+    
     // MARK: - User Data Persistence
     
     private let userSavePath = FileManager.documentsDirectory.appendingPathComponent("SavedUser")

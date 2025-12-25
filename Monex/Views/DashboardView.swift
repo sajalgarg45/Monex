@@ -338,24 +338,9 @@ struct EmptyBudgetView: View {
     
     var body: some View {
         VStack(spacing: 24) {
-            ZStack {
-                Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color.blue.opacity(colorScheme == .dark ? 0.2 : 0.1),
-                                Color.blue.opacity(colorScheme == .dark ? 0.1 : 0.05)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .frame(width: 100, height: 100)
-                
-                Image(systemName: "creditcard.fill")
-                    .font(.system(size: 50, weight: .light))
-                    .foregroundColor(.blue.opacity(0.6))
-            }
+            Image(systemName: "creditcard.fill")
+                .font(.system(size: 50, weight: .light))
+                .foregroundColor(.secondary)
             
             VStack(spacing: 8) {
                 Text("No Budgets Yet")
