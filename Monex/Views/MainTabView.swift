@@ -245,9 +245,19 @@ struct MonthlyBalanceCard: View {
                             .foregroundColor(.secondary)
                     }
                     
-                    Text("₹\(Int((viewModel.currentUser?.monthlyStartBalance ?? 0) - viewModel.totalSpent))")
-                        .font(.system(size: 36, weight: .bold))
-                        .foregroundColor(.primary)
+                    if (viewModel.currentUser?.monthlyStartBalance ?? 0) == 0 {
+                        Button(action: {
+                            showingEditSheet = true
+                        }) {
+                            Text("Add Balance")
+                                .font(.system(size: 24, weight: .semibold))
+                                .foregroundColor(.blue)
+                        }
+                    } else {
+                        Text("₹\(Int((viewModel.currentUser?.monthlyStartBalance ?? 0) - viewModel.totalSpent))")
+                            .font(.system(size: 36, weight: .bold))
+                            .foregroundColor(.primary)
+                    }
                 }
                 
                 Spacer()
