@@ -9,6 +9,8 @@ struct BudgetDetailView: View {
     @State private var showingDeleteAlert = false
     @State private var showingEditExpense = false
     @State private var selectedExpense: Expense?
+    @State private var showingDeleteExpenseAlert = false
+    @State private var expenseToDelete: Expense?
     
     var body: some View {
         ScrollView {
@@ -54,11 +56,9 @@ struct BudgetDetailView: View {
                                 selectedExpense = expense
                                 showingEditExpense = true
                             } onDelete: {
-                                // Delete expense
-                                if let index = budget.expenses.firstIndex(where: { $0.id == expense.id }) {
-                                    budget.expenses.remove(at: index)
-                                    viewModel.updateBudget(budget)
-                                }
+                                // Show delete confirmation
+                                expenseToDelete = expense
+                                showingDeleteExpenseAlert = true
                             }
                         }
                     }
@@ -108,6 +108,18 @@ struct BudgetDetailView: View {
             }
         } message: {
             Text("Are you sure you want to delete this budget? All expenses will be lost.")
+        }
+        .alert("Delete Expense", isPresented: $showingDeleteExpenseAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete", role: .destructive) {
+                if let expense = expenseToDelete,
+                   let index = budget.expenses.firstIndex(where: { $0.id == expense.id }) {
+                    budget.expenses.remove(at: index)
+                    viewModel.updateBudget(budget)
+                }
+            }
+        } message: {
+            Text("Are you sure you want to delete this expense?")
         }
     }
 }

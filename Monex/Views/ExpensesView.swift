@@ -7,6 +7,8 @@ struct ExpensesView: View {
     @State private var selectedBudget: Budget?
     @State private var showingEditExpense = false
     @State private var selectedExpense: (Budget, Expense)?
+    @State private var showingDeleteAlert = false
+    @State private var expenseToDelete: ExpenseData?
     
     var body: some View {
         NavigationView {
@@ -72,7 +74,8 @@ struct ExpensesView: View {
                                                     showingEditExpense = true
                                                 },
                                                 onDelete: {
-                                                    deleteExpense(expenseData)
+                                                    expenseToDelete = expenseData
+                                                    showingDeleteAlert = true
                                                 }
                                             )
                                         }
@@ -106,25 +109,41 @@ struct ExpensesView: View {
                 }
             }
             .sheet(isPresented: $showingAddExpense) {
-                if let budget = selectedBudget,
-                   let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }) {
-                    let bindingBudget = Binding(
-                        get: { viewModel.budgets[index] },
-                        set: { viewModel.budgets[index] = $0 }
-                    )
-                    AddExpenseView(viewModel: viewModel, budget: bindingBudget)
+                if let budget = selectedBudget {
+                    if budget.id == viewModel.miscBudget.id {
+                        AddExpenseView(viewModel: viewModel, budget: $viewModel.miscBudget)
+                    } else if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }) {
+                        let bindingBudget = Binding(
+                            get: { viewModel.budgets[index] },
+                            set: { viewModel.budgets[index] = $0 }
+                        )
+                        AddExpenseView(viewModel: viewModel, budget: bindingBudget)
+                    }
                 }
             }
             .sheet(isPresented: $showingEditExpense) {
-                if let (budget, expense) = selectedExpense,
-                   let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }) {
-                    let bindingBudget = Binding(
-                        get: { viewModel.budgets[index] },
-                        set: { viewModel.budgets[index] = $0 }
-                    )
-                    
-                    EditExpenseView(viewModel: viewModel, budget: bindingBudget, expense: expense)
+                if let (budget, expense) = selectedExpense {
+                    if budget.id == viewModel.miscBudget.id {
+                        EditExpenseView(viewModel: viewModel, budget: $viewModel.miscBudget, expense: expense)
+                    } else if let index = viewModel.budgets.firstIndex(where: { $0.id == budget.id }) {
+                        let bindingBudget = Binding(
+                            get: { viewModel.budgets[index] },
+                            set: { viewModel.budgets[index] = $0 }
+                        )
+                        
+                        EditExpenseView(viewModel: viewModel, budget: bindingBudget, expense: expense)
+                    }
                 }
+            }
+            .alert("Delete Expense", isPresented: $showingDeleteAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Delete", role: .destructive) {
+                    if let expenseData = expenseToDelete {
+                        deleteExpense(expenseData)
+                    }
+                }
+            } message: {
+                Text("Are you sure you want to delete this expense?")
             }
         }
     }
@@ -205,7 +224,11 @@ struct ExpensesView: View {
     
     // Delete an expense
     private func deleteExpense(_ expenseData: ExpenseData) {
-        if let index = viewModel.budgets.firstIndex(where: { $0.id == expenseData.budget.id }) {
+        if expenseData.budget.id == viewModel.miscBudget.id {
+            if let expenseIndex = viewModel.miscBudget.expenses.firstIndex(where: { $0.id == expenseData.expense.id }) {
+                viewModel.deleteExpense(at: IndexSet([expenseIndex]), from: viewModel.miscBudget.id)
+            }
+        } else if let index = viewModel.budgets.firstIndex(where: { $0.id == expenseData.budget.id }) {
             if let expenseIndex = viewModel.budgets[index].expenses.firstIndex(where: { $0.id == expenseData.expense.id }) {
                 viewModel.budgets[index].expenses.remove(at: expenseIndex)
                 viewModel.updateBudget(viewModel.budgets[index])
@@ -297,6 +320,37 @@ struct BudgetSelectionView: View {
     var body: some View {
         NavigationView {
             List {
+                // Miscellaneous budget
+                Button {
+                    onSelect(viewModel.miscBudget)
+                    presentationMode.wrappedValue.dismiss()
+                } label: {
+                    HStack {
+                        Image(systemName: viewModel.miscBudget.icon)
+                            .foregroundColor(Color(red: 78/255, green: 205/255, blue: 196/255))
+                            .font(.title3)
+                            .frame(width: 36, height: 36)
+                            .background(Color(red: 78/255, green: 205/255, blue: 196/255).opacity(0.2))
+                            .cornerRadius(8)
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(viewModel.miscBudget.name)
+                                .foregroundColor(.primary)
+                            
+                            Text("No limit")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        
+                        Spacer()
+                        
+                        Image(systemName: "chevron.right")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                // Regular budgets
                 ForEach(viewModel.budgets) { budget in
                     Button {
                         onSelect(budget)
