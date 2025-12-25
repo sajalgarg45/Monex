@@ -116,6 +116,13 @@ struct BudgetInfoCard: View {
     let budget: Budget
     @Environment(\.colorScheme) var colorScheme
     
+    var budgetColor: Color {
+        if budget.isMiscellaneous {
+            return Color(red: 78/255, green: 205/255, blue: 196/255)
+        }
+        return budget.getColor()
+    }
+    
     var body: some View {
         VStack(spacing: 18) {
             HStack {
@@ -124,8 +131,8 @@ struct BudgetInfoCard: View {
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    budget.getColor().opacity(colorScheme == .dark ? 0.3 : 0.2),
-                                    budget.getColor().opacity(colorScheme == .dark ? 0.15 : 0.1)
+                                    budgetColor.opacity(colorScheme == .dark ? 0.3 : 0.2),
+                                    budgetColor.opacity(colorScheme == .dark ? 0.15 : 0.1)
                                 ],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
@@ -138,7 +145,7 @@ struct BudgetInfoCard: View {
                             .font(.system(size: 32))
                     } else {
                         Image(systemName: budget.icon)
-                            .foregroundColor(budget.getColor())
+                            .foregroundColor(budgetColor)
                             .font(.system(size: 30, weight: .semibold))
                     }
                 }
@@ -148,73 +155,77 @@ struct BudgetInfoCard: View {
                         .font(.title3)
                         .fontWeight(.semibold)
                     
-                    Text("Budget: ₹\(budget.amount, specifier: "%.0f")")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
+                    if !budget.isMiscellaneous {
+                        Text("Budget: ₹\(budget.amount, specifier: "%.0f")")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(.secondary)
+                    }
                 }
                 
                 Spacer()
                 
                 VStack(alignment: .trailing, spacing: 6) {
-                    Text("Remaining")
+                    Text(budget.isMiscellaneous ? "Spent" : "Remaining")
                         .font(.caption)
                         .fontWeight(.medium)
                         .foregroundColor(.secondary)
                     
-                    Text("₹\(budget.remainingAmount, specifier: "%.0f")")
+                    Text("₹\(budget.isMiscellaneous ? budget.totalSpent : budget.remainingAmount, specifier: "%.0f")")
                         .font(.title2)
                         .fontWeight(.bold)
-                        .foregroundColor(budget.remainingAmount < budget.amount * 0.2 ? .red : .primary)
+                        .foregroundColor(budget.isMiscellaneous ? .primary : (budget.remainingAmount < budget.amount * 0.2 ? .red : .primary))
                 }
             }
             
-            // Progress bar
-            VStack(alignment: .leading, spacing: 10) {
-                HStack {
-                    Text("Spent: ₹\(budget.amount - budget.remainingAmount, specifier: "%.0f")")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                    
-                    Spacer()
-                    
-                    Text("\(Int(budget.spentPercentage * 100))%")
-                        .font(.caption)
-                        .fontWeight(.bold)
-                }
-                
-                GeometryReader { geometry in
-                    ZStack(alignment: .leading) {
-                        // Background track
-                        Capsule()
-                            .fill(
-                                colorScheme == .dark
-                                ? Color.white.opacity(0.1)
-                                : budget.getColor().opacity(0.15)
-                            )
-                            .frame(height: 10)
+            // Progress bar - only for non-miscellaneous budgets
+            if !budget.isMiscellaneous {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Text("Spent: ₹\(budget.amount - budget.remainingAmount, specifier: "%.0f")")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .foregroundColor(.secondary)
                         
-                        // Progress fill with gradient
-                        Capsule()
-                            .fill(
-                                LinearGradient(
-                                    colors: [
-                                        budget.getColor(),
-                                        budget.getColor().opacity(0.7)
-                                    ],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .frame(
-                                width: min(CGFloat(budget.spentPercentage) * geometry.size.width, geometry.size.width),
-                                height: 10
-                            )
-                            .animation(.spring(response: 0.6, dampingFraction: 0.8), value: budget.spentPercentage)
+                        Spacer()
+                        
+                        Text("\(Int(budget.spentPercentage * 100))%")
+                            .font(.caption)
+                            .fontWeight(.bold)
                     }
+                    
+                    GeometryReader { geometry in
+                        ZStack(alignment: .leading) {
+                            // Background track
+                            Capsule()
+                                .fill(
+                                    colorScheme == .dark
+                                    ? Color.white.opacity(0.1)
+                                    : budgetColor.opacity(0.15)
+                                )
+                                .frame(height: 10)
+                            
+                            // Progress fill with gradient
+                            Capsule()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            budgetColor,
+                                            budgetColor.opacity(0.7)
+                                        ],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
+                                )
+                                .frame(
+                                    width: min(CGFloat(budget.spentPercentage) * geometry.size.width, geometry.size.width),
+                                    height: 10
+                                )
+                                .animation(.spring(response: 0.6, dampingFraction: 0.8), value: budget.spentPercentage)
+                        }
+                    }
+                    .frame(height: 10)
                 }
-                .frame(height: 10)
             }
         }
         .padding()
