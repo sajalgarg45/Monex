@@ -6,6 +6,7 @@ class BudgetViewModel: ObservableObject {
     @Published var isLoggedIn: Bool = false
     @Published var currentUser: User?
     @Published var miscBudget: Budget
+    @Published var assets: [Asset] = []
     
     private func savePath(for userId: String) -> URL {
         FileManager.documentsDirectory.appendingPathComponent("SavedBudgets_\(userId)")
@@ -13,6 +14,10 @@ class BudgetViewModel: ObservableObject {
     
     private func miscBudgetPath(for userId: String) -> URL {
         FileManager.documentsDirectory.appendingPathComponent("MiscBudget_\(userId)")
+    }
+    
+    private func assetsPath(for userId: String) -> URL {
+        FileManager.documentsDirectory.appendingPathComponent("SavedAssets_\(userId)")
     }
     
     init() {
@@ -26,6 +31,7 @@ class BudgetViewModel: ObservableObject {
             currentUser = savedUser
             loadData(for: savedUser.id)
             loadMiscBudget(for: savedUser.id)
+            loadAssets(for: savedUser.id)
         }
     }
     
@@ -51,8 +57,10 @@ class BudgetViewModel: ObservableObject {
         // Initialize empty data for new user
         budgets = []
         miscBudget = Budget(name: "Miscellaneous", amount: 0, icon: "square.grid.2x2.fill", color: "gray", isMiscellaneous: true)
+        assets = []
         saveData()
         saveMiscBudget()
+        saveAssets()
     }
     
     func login(email: String, password: String) -> Bool {
@@ -62,7 +70,8 @@ class BudgetViewModel: ObservableObject {
             if savedUser.email.lowercased() == email.lowercased() {
                 isLoggedIn = true
                 currentUser = savedUser;                loadData(for: savedUser.id)
-                loadMiscBudget(for: savedUser.id);                return true
+                loadMiscBudget(for: savedUser.id)
+                loadAssets(for: savedUser.id);                return true
             }
         }
         return false
@@ -71,9 +80,11 @@ class BudgetViewModel: ObservableObject {
     func logout() {
         saveData()
         saveMiscBudget()
+        saveAssets()
         isLoggedIn = false
         currentUser = nil
         budgets = []
+        assets = []
         miscBudget = Budget(name: "Miscellaneous", amount: 0, icon: "square.grid.2x2.fill", color: "gray", isMiscellaneous: true)
     }
     
@@ -199,6 +210,41 @@ class BudgetViewModel: ObservableObject {
         budgets.reduce(0) { $0 + $1.remainingAmount }
     }
     
+    // MARK: - Asset Management
+    
+    func addAsset(_ asset: Asset) {
+        assets.append(asset)
+        saveAssets()
+    }
+    
+    func updateAsset(_ asset: Asset) {
+        if let index = assets.firstIndex(where: { $0.id == asset.id }) {
+            assets[index] = asset
+            saveAssets()
+        }
+    }
+    
+    func deleteAsset(_ asset: Asset) {
+        assets.removeAll { $0.id == asset.id }
+        saveAssets()
+    }
+    
+    var totalInvestments: Double {
+        assets.filter { $0.category == .investments }.reduce(0) { $0 + $1.amount }
+    }
+    
+    var totalLiabilities: Double {
+        assets.filter { $0.category == .liabilities }.reduce(0) { $0 + $1.amount }
+    }
+    
+    var totalInsurance: Double {
+        assets.filter { $0.category == .insurance }.reduce(0) { $0 + $1.amount }
+    }
+    
+    var netWorth: Double {
+        totalInvestments - totalLiabilities + totalInsurance
+    }
+    
     // MARK: - Persistence
     
     private func saveData() {
@@ -238,6 +284,26 @@ class BudgetViewModel: ObservableObject {
         } catch {
             // Keep default misc budget if load fails
             miscBudget = Budget(name: "Miscellaneous", amount: 0, icon: "square.grid.2x2.fill", color: "gray", isMiscellaneous: true)
+        }
+    }
+    
+    private func saveAssets() {
+        guard let userId = currentUser?.id else { return }
+        do {
+            let data = try JSONEncoder().encode(assets)
+            try data.write(to: assetsPath(for: userId), options: [.atomic, .completeFileProtection])
+        } catch {
+            print("Failed to save assets: \(error.localizedDescription)")
+        }
+    }
+    
+    private func loadAssets(for userId: String) {
+        do {
+            let data = try Data(contentsOf: assetsPath(for: userId))
+            assets = try JSONDecoder().decode([Asset].self, from: data)
+        } catch {
+            print("No saved assets found: \(error.localizedDescription)")
+            assets = []
         }
     }
 } 

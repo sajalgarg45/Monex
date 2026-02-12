@@ -51,7 +51,7 @@ struct MainTabView: View {
             // Budgets tab
             BudgetsView(viewModel: viewModel)
                 .tabItem {
-                    Label("Budgets", systemImage: "folder.fill")
+                    Label("Budgets", systemImage: "banknote.fill")
                 }
                 .tag(1)
             
