@@ -234,7 +234,7 @@ class BudgetViewModel: ObservableObject {
     }
     
     var totalLiabilities: Double {
-        assets.filter { $0.category == .liabilities }.reduce(0) { $0 + $1.amount }
+        assets.filter { $0.category == .loans }.reduce(0) { $0 + $1.amount }
     }
     
     var totalInsurance: Double {
@@ -242,7 +242,7 @@ class BudgetViewModel: ObservableObject {
     }
     
     var netWorth: Double {
-        totalInvestments - totalLiabilities + totalInsurance
+        totalInvestments - totalLiabilities
     }
     
     // MARK: - Persistence

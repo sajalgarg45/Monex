@@ -3,7 +3,7 @@ import SwiftUI
 struct InvestmentsView: View {
     @ObservedObject var viewModel: BudgetViewModel
     @State private var showingAddAsset = false
-    @State private var expandedSections: Set<Asset.AssetCategory> = [.investments, .liabilities, .insurance]
+    @State private var expandedSections: Set<Asset.AssetCategory> = [.investments, .loans, .insurance]
     
     var body: some View {
         NavigationView {
@@ -22,39 +22,71 @@ struct InvestmentsView: View {
                     .padding(.horizontal)
                     .padding(.top, 8)
                     
-                    // Net Worth Card
+                    // Net Worth Card - Separated
                     NetWorthCard(viewModel: viewModel)
                         .padding(.horizontal)
                     
-                    // Investments Section
-                    AssetSection(
-                        category: .investments,
-                        assets: viewModel.assets.filter { $0.category == .investments },
-                        isExpanded: expandedSections.contains(.investments),
-                        onToggle: { toggleSection(.investments) },
-                        onDelete: { asset in viewModel.deleteAsset(asset) }
-                    )
+                    // Category Summary Cards
+                    VStack(spacing: 12) {
+                        CategorySummaryCard(
+                            title: "Investments",
+                            amount: viewModel.totalInvestments,
+                            icon: "arrow.up.right.circle.fill",
+                            color: .green,
+                            isExpanded: expandedSections.contains(.investments),
+                            onToggle: { toggleSection(.investments) }
+                        )
+                        
+                        CategorySummaryCard(
+                            title: "Loans",
+                            amount: viewModel.totalLiabilities,
+                            icon: "arrow.down.right.circle.fill",
+                            color: .red,
+                            isExpanded: expandedSections.contains(.loans),
+                            onToggle: { toggleSection(.loans) }
+                        )
+                        
+                        CategorySummaryCard(
+                            title: "Insurance",
+                            amount: viewModel.totalInsurance,
+                            icon: "shield.checkered",
+                            color: .blue,
+                            isExpanded: expandedSections.contains(.insurance),
+                            onToggle: { toggleSection(.insurance) }
+                        )
+                    }
+                    .padding(.horizontal)
                     
-                    // Liabilities Section
-                    AssetSection(
-                        category: .liabilities,
-                        assets: viewModel.assets.filter { $0.category == .liabilities },
-                        isExpanded: expandedSections.contains(.liabilities),
-                        onToggle: { toggleSection(.liabilities) },
-                        onDelete: { asset in viewModel.deleteAsset(asset) }
-                    )
+                    // Investments Section
+                    if expandedSections.contains(.investments) {
+                        AssetCategorySection(
+                            category: .investments,
+                            assets: viewModel.assets.filter { $0.category == .investments },
+                            viewModel: viewModel
+                        )
+                    }
+                    
+                    // Loans Section
+                    if expandedSections.contains(.loans) {
+                        AssetCategorySection(
+                            category: .loans,
+                            assets: viewModel.assets.filter { $0.category == .loans },
+                            viewModel: viewModel
+                        )
+                    }
                     
                     // Insurance Section
-                    AssetSection(
-                        category: .insurance,
-                        assets: viewModel.assets.filter { $0.category == .insurance },
-                        isExpanded: expandedSections.contains(.insurance),
-                        onToggle: { toggleSection(.insurance) },
-                        onDelete: { asset in viewModel.deleteAsset(asset) }
-                    )
+                    if expandedSections.contains(.insurance) {
+                        AssetCategorySection(
+                            category: .insurance,
+                            assets: viewModel.assets.filter { $0.category == .insurance },
+                            viewModel: viewModel
+                        )
+                    }
                 }
                 .padding(.bottom, 20)
             }
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -63,6 +95,7 @@ struct InvestmentsView: View {
                         showingAddAsset = true
                     } label: {
                         Image(systemName: "plus")
+                            .font(.system(size: 18, weight: .medium))
                     }
                 }
             }
@@ -74,10 +107,12 @@ struct InvestmentsView: View {
     }
     
     private func toggleSection(_ category: Asset.AssetCategory) {
-        if expandedSections.contains(category) {
-            expandedSections.remove(category)
-        } else {
-            expandedSections.insert(category)
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+            if expandedSections.contains(category) {
+                expandedSections.remove(category)
+            } else {
+                expandedSections.insert(category)
+            }
         }
     }
 }
@@ -87,58 +122,28 @@ struct NetWorthCard: View {
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "chart.bar.fill")
-                            .font(.system(size: 20, weight: .semibold))
-                            .foregroundStyle(.green)
-                        Text("Net Worth")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(.secondary)
-                    }
+        VStack(alignment: .leading, spacing: 20) {
+            HStack(spacing: 12) {
+                ZStack {
+                    Circle()
+                        .fill(Color.green.opacity(0.2))
+                        .frame(width: 50, height: 50)
                     
-                    Text("₹\(Int(viewModel.netWorth))")
-                        .font(.system(size: 36, weight: .bold))
+                    Image(systemName: "chart.bar.fill")
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundStyle(.green)
+                }
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Net Worth")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.secondary)
+                    
+                    Text("₹\(formatAmount(viewModel.netWorth))")
+                        .font(.system(size: 32, weight: .bold))
                         .foregroundColor(.primary)
-                        .frame(minWidth: 120, alignment: .leading)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.4)
-                }
-                
-                Spacer()
-            }
-            
-            Divider()
-            
-            // Summary Row
-            HStack(spacing: 20) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Investments")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text("₹\(Int(viewModel.totalInvestments))")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.green)
-                }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Liabilities")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text("₹\(Int(viewModel.totalLiabilities))")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.red)
-                }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Insurance")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    Text("₹\(Int(viewModel.totalInsurance))")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.blue)
+                        .minimumScaleFactor(0.6)
                 }
                 
                 Spacer()
@@ -148,146 +153,101 @@ struct NetWorthCard: View {
         .frame(maxWidth: .infinity)
         .background(Color(UIColor.secondarySystemGroupedBackground))
         .cornerRadius(20)
-        .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.3 : 0.05), radius: 8, x: 0, y: 2)
+        .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.08), radius: 10, x: 0, y: 4)
+    }
+    
+    private func formatAmount(_ amount: Double) -> String {
+        if amount < 0 {
+            return "-\(Int(abs(amount)).formatted())"
+        }
+        return Int(amount).formatted()
     }
 }
 
-struct AssetSection: View {
-    let category: Asset.AssetCategory
-    let assets: [Asset]
+struct CategorySummaryCard: View {
+    let title: String
+    let amount: Double
+    let icon: String
+    let color: Color
     let isExpanded: Bool
     let onToggle: () -> Void
-    let onDelete: (Asset) -> Void
-    
-    var totalAmount: Double {
-        assets.reduce(0) { $0 + $1.amount }
-    }
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Section Header
-            Button(action: onToggle) {
-                HStack {
-                    Image(systemName: category.icon)
-                        .font(.system(size: 18))
-                        .foregroundColor(categoryColor)
-                    
-                    Text(category.rawValue)
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundColor(.primary)
-                    
-                    Spacer()
-                    
-                    Text("₹\(Int(totalAmount))")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.secondary)
-                    
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(.secondary)
-                }
-                .padding()
-                .background(Color(UIColor.secondarySystemGroupedBackground))
-                .cornerRadius(16)
-            }
-            .buttonStyle(PlainButtonStyle())
-            .padding(.horizontal)
-            
-            // Asset Items
-            if isExpanded {
-                if assets.isEmpty {
-                    HStack {
-                        Spacer()
-                        Text("No \(category.rawValue.lowercased()) added yet")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .padding(.vertical, 12)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                } else {
-                    ForEach(assets) { asset in
-                        AssetRow(asset: asset, onDelete: { onDelete(asset) })
-                            .padding(.horizontal)
-                    }
-                }
-            }
-        }
-    }
-    
-    private var categoryColor: Color {
-        switch category {
-        case .investments:
-            return .green
-        case .liabilities:
-            return .red
-        case .insurance:
-            return .blue
-        }
-    }
-}
-
-struct AssetRow: View {
-    let asset: Asset
-    let onDelete: () -> Void
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        HStack(spacing: 16) {
-            // Icon
-            ZStack {
-                Circle()
-                    .fill(assetColor.opacity(0.2))
-                    .frame(width: 50, height: 50)
+        Button(action: onToggle) {
+            HStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(color.opacity(0.2))
+                        .frame(width: 50, height: 50)
+                    
+                    Image(systemName: icon)
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundStyle(color)
+                }
                 
-                Image(systemName: asset.type.icon)
-                    .font(.system(size: 24))
-                    .foregroundColor(assetColor)
-            }
-            
-            // Asset Info
-            VStack(alignment: .leading, spacing: 6) {
-                Text(asset.name)
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(.primary)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(.primary)
+                    
+                    Text("₹\(formatAmount(amount))")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundColor(color)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                }
                 
-                Text(asset.type.rawValue)
-                    .font(.caption)
+                Spacer()
+                
+                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.secondary)
             }
-            
-            Spacer()
-            
-            // Amount
-            Text("₹\(Int(asset.amount))")
-                .font(.system(size: 20, weight: .bold))
-                .foregroundColor(.primary)
-                .frame(minWidth: 80, alignment: .trailing)
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
+            .padding(20)
+            .frame(maxWidth: .infinity)
+            .background(Color(UIColor.secondarySystemGroupedBackground))
+            .cornerRadius(20)
+            .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.06), radius: 8, x: 0, y: 3)
         }
-        .padding()
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color(UIColor.tertiarySystemGroupedBackground))
-        )
-        .contextMenu {
-            Button(role: .destructive, action: onDelete) {
-                Label("Delete", systemImage: "trash")
-            }
-        }
+        .buttonStyle(PlainButtonStyle())
     }
     
-    private var assetColor: Color {
-        switch asset.type.color {
-        case "blue": return .blue
-        case "green": return .green
-        case "yellow": return .yellow
-        case "purple": return .purple
-        case "orange": return .orange
-        case "red": return .red
-        case "cyan": return .cyan
-        default: return .gray
+    private func formatAmount(_ amount: Double) -> String {
+        Int(amount).formatted()
+    }
+}
+
+struct AssetCategorySection: View {
+    let category: Asset.AssetCategory
+    let assets: [Asset]
+    @ObservedObject var viewModel: BudgetViewModel
+    
+    var body: some View {
+        VStack(spacing: 16) {
+            if assets.isEmpty {
+                HStack {
+                    Spacer()
+                    VStack(spacing: 8) {
+                        Image(systemName: category.icon)
+                            .font(.system(size: 40))
+                            .foregroundColor(.secondary.opacity(0.5))
+                        Text("No \(category.rawValue.lowercased()) added yet")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.vertical, 30)
+                    Spacer()
+                }
+                .background(Color(UIColor.secondarySystemGroupedBackground))
+                .cornerRadius(16)
+                .padding(.horizontal)
+            } else {
+                ForEach(assets) { asset in
+                    AssetCard(asset: asset, viewModel: viewModel)
+                        .padding(.horizontal)
+                }
+            }
         }
     }
 }
