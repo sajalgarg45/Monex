@@ -4,7 +4,7 @@ struct MainTabView: View {
     @ObservedObject var viewModel: BudgetViewModel
     @State private var selectedTab = 0
     @State private var showingAddBudget = false
-    @State private var showingNotifications = false
+    @State private var showingProfile = false
     
     var body: some View {
         // Main TabView with 4 tabs
@@ -29,22 +29,22 @@ struct MainTabView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
-                            showingNotifications = true
+                            showingProfile = true
                         } label: {
-                            Image(systemName: "bell.fill")
+                            Image(systemName: "person.circle.fill")
                         }
                     }
                 }
                 .sheet(isPresented: $showingAddBudget) {
                     AddBudgetView(viewModel: viewModel)
                 }
-                .sheet(isPresented: $showingNotifications) {
-                    NotificationsView(viewModel: viewModel)
+                .sheet(isPresented: $showingProfile) {
+                    ProfileView(viewModel: viewModel)
                 }
             }
             .navigationViewStyle(.stack)
             .tabItem {
-                Label("Dashboard", systemImage: "house.fill")
+                Label("Home", systemImage: "house.fill")
             }
             .tag(0)
             
@@ -62,12 +62,19 @@ struct MainTabView: View {
                 }
                 .tag(2)
             
-            // Profile tab
-            ProfileView(viewModel: viewModel)
+            // Assets tab
+            InvestmentsView(viewModel: viewModel)
                 .tabItem {
-                    Label("Profile", systemImage: "person.circle.fill")
+                    Label("Assets", systemImage: "chart.line.uptrend.xyaxis")
                 }
                 .tag(3)
+            
+            // MonexAI tab
+            MonexAIView(viewModel: viewModel)
+                .tabItem {
+                    Label("MonexAI", systemImage: "brain.head.profile")
+                }
+                .tag(4)
         }
         .accentColor(.blue)
         .onAppear {
