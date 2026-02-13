@@ -3,7 +3,6 @@ import SwiftUI
 struct InvestmentsView: View {
     @ObservedObject var viewModel: BudgetViewModel
     @State private var showingAddAsset = false
-    @State private var expandedSections: Set<Asset.AssetCategory> = [.investments, .loans, .insurance]
     
     var body: some View {
         NavigationView {
@@ -36,59 +35,43 @@ struct InvestmentsView: View {
                     }
                     .padding(.horizontal)
                     
-                    // Expandable Sections
-                    VStack(spacing: 20) {
-                        // Investments Section Header
-                        SectionHeaderButton(
-                            title: "Investments",
-                            isExpanded: expandedSections.contains(.investments),
-                            onToggle: { toggleSection(.investments) }
-                        )
-                        .padding(.horizontal)
-                        .padding(.top, 8)
+                    // Select Category Section
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Select Category")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding(.horizontal)
+                            .padding(.top, 8)
                         
-                        // Investments Section
-                        if expandedSections.contains(.investments) {
-                            AssetCategorySection(
-                                category: .investments,
-                                assets: viewModel.assets.filter { $0.category == .investments },
-                                viewModel: viewModel
-                            )
+                        VStack(spacing: 16) {
+                            NavigationLink(destination: CategoryDetailView(category: .investments, viewModel: viewModel)) {
+                                CategoryNavigationCard(
+                                    title: "Investments",
+                                    subtitle: "Mutual Funds, Stocks, Gold, FD",
+                                    icon: "arrow.up.right.circle.fill",
+                                    color: .green
+                                )
+                            }
+                            
+                            NavigationLink(destination: CategoryDetailView(category: .loans, viewModel: viewModel)) {
+                                CategoryNavigationCard(
+                                    title: "Loans",
+                                    subtitle: "Home, Car, Education Loans",
+                                    icon: "arrow.down.circle.fill",
+                                    color: .red
+                                )
+                            }
+                            
+                            NavigationLink(destination: CategoryDetailView(category: .insurance, viewModel: viewModel)) {
+                                CategoryNavigationCard(
+                                    title: "Insurance",
+                                    subtitle: "Health, Life, LIC Policies",
+                                    icon: "shield.fill",
+                                    color: .blue
+                                )
+                            }
                         }
-                        
-                        // Loans Section Header
-                        SectionHeaderButton(
-                            title: "Loans",
-                            isExpanded: expandedSections.contains(.loans),
-                            onToggle: { toggleSection(.loans) }
-                        )
                         .padding(.horizontal)
-                        
-                        // Loans Section
-                        if expandedSections.contains(.loans) {
-                            AssetCategorySection(
-                                category: .loans,
-                                assets: viewModel.assets.filter { $0.category == .loans },
-                                viewModel: viewModel
-                            )
-                        }
-                        
-                        // Insurance Section Header
-                        SectionHeaderButton(
-                            title: "Insurance",
-                            isExpanded: expandedSections.contains(.insurance),
-                            onToggle: { toggleSection(.insurance) }
-                        )
-                        .padding(.horizontal)
-                        
-                        // Insurance Section
-                        if expandedSections.contains(.insurance) {
-                            AssetCategorySection(
-                                category: .insurance,
-                                assets: viewModel.assets.filter { $0.category == .insurance },
-                                viewModel: viewModel
-                            )
-                        }
                     }
                 }
                 .padding(.bottom, 20)
@@ -111,16 +94,6 @@ struct InvestmentsView: View {
             }
         }
         .navigationViewStyle(.stack)
-    }
-    
-    private func toggleSection(_ category: Asset.AssetCategory) {
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            if expandedSections.contains(category) {
-                expandedSections.remove(category)
-            } else {
-                expandedSections.insert(category)
-            }
-        }
     }
 }
 
@@ -162,65 +135,54 @@ struct AssetSummaryCard: View {
     }
 }
 
-struct SectionHeaderButton: View {
+struct CategoryNavigationCard: View {
     let title: String
-    let isExpanded: Bool
-    let onToggle: () -> Void
+    let subtitle: String
+    let icon: String
+    let color: Color
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        Button(action: {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-                onToggle()
+        HStack(spacing: 16) {
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.2))
+                    .frame(width: 70, height: 70)
+                
+                ZStack {
+                    Circle()
+                        .fill(color)
+                        .frame(width: 50, height: 50)
+                    
+                    Image(systemName: icon)
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
             }
-        }) {
-            HStack {
+            
+            VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.title3)
-                    .fontWeight(.semibold)
+                    .font(.system(size: 22, weight: .bold))
                     .foregroundColor(.primary)
                 
-                Spacer()
-                
-                Image(systemName: isExpanded ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
-                    .font(.title3)
+                Text(subtitle)
+                    .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .lineLimit(2)
             }
+            
+            Spacer()
+            
+            Image(systemName: "chevron.right")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(.secondary)
         }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
-struct AssetCategorySection: View {
-    let category: Asset.AssetCategory
-    let assets: [Asset]
-    @ObservedObject var viewModel: BudgetViewModel
-    
-    var body: some View {
-        VStack(spacing: 16) {
-            if assets.isEmpty {
-                HStack {
-                    Spacer()
-                    VStack(spacing: 8) {
-                        Image(systemName: category.icon)
-                            .font(.system(size: 40))
-                            .foregroundColor(.secondary.opacity(0.5))
-                        Text("No \(category.rawValue.lowercased()) added yet")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding(.vertical, 30)
-                    Spacer()
-                }
-                .background(Color(UIColor.secondarySystemGroupedBackground))
-                .cornerRadius(16)
-                .padding(.horizontal)
-            } else {
-                ForEach(assets) { asset in
-                    AssetCard(asset: asset, viewModel: viewModel)
-                        .padding(.horizontal)
-                }
-            }
-        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color(UIColor.secondarySystemGroupedBackground))
+        )
+        .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.06), radius: 8, x: 0, y: 3)
     }
 }
 
