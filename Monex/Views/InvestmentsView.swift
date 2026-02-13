@@ -22,66 +22,73 @@ struct InvestmentsView: View {
                     .padding(.horizontal)
                     .padding(.top, 8)
                     
-                    // Net Worth Card - Separated
-                    NetWorthCard(viewModel: viewModel)
-                        .padding(.horizontal)
-                    
-                    // Category Summary Cards
-                    VStack(spacing: 12) {
-                        CategorySummaryCard(
-                            title: "Investments",
-                            amount: viewModel.totalInvestments,
-                            icon: "arrow.up.right.circle.fill",
-                            color: .green,
-                            isExpanded: expandedSections.contains(.investments),
-                            onToggle: { toggleSection(.investments) }
-                        )
+                    // Summary Cards Grid (2x2) - Same style as Dashboard
+                    VStack(spacing: 16) {
+                        HStack(spacing: 16) {
+                            AssetSummaryCard(title: "Net Worth", value: viewModel.netWorth, iconName: "chart.bar.fill", color: .green)
+                            AssetSummaryCard(title: "Investments", value: viewModel.totalInvestments, iconName: "arrow.up.right.circle.fill", color: .green)
+                        }
                         
-                        CategorySummaryCard(
-                            title: "Loans",
-                            amount: viewModel.totalLiabilities,
-                            icon: "arrow.down.right.circle.fill",
-                            color: .red,
-                            isExpanded: expandedSections.contains(.loans),
-                            onToggle: { toggleSection(.loans) }
-                        )
-                        
-                        CategorySummaryCard(
-                            title: "Insurance",
-                            amount: viewModel.totalInsurance,
-                            icon: "shield.checkered",
-                            color: .blue,
-                            isExpanded: expandedSections.contains(.insurance),
-                            onToggle: { toggleSection(.insurance) }
-                        )
+                        HStack(spacing: 16) {
+                            AssetSummaryCard(title: "Loans", value: viewModel.totalLiabilities, iconName: "arrow.down.circle.fill", color: .red)
+                            AssetSummaryCard(title: "Insurance", value: viewModel.totalInsurance, iconName: "shield.fill", color: .blue)
+                        }
                     }
                     .padding(.horizontal)
                     
-                    // Investments Section
-                    if expandedSections.contains(.investments) {
-                        AssetCategorySection(
-                            category: .investments,
-                            assets: viewModel.assets.filter { $0.category == .investments },
-                            viewModel: viewModel
+                    // Expandable Sections
+                    VStack(spacing: 20) {
+                        // Investments Section Header
+                        SectionHeaderButton(
+                            title: "Investments",
+                            isExpanded: expandedSections.contains(.investments),
+                            onToggle: { toggleSection(.investments) }
                         )
-                    }
-                    
-                    // Loans Section
-                    if expandedSections.contains(.loans) {
-                        AssetCategorySection(
-                            category: .loans,
-                            assets: viewModel.assets.filter { $0.category == .loans },
-                            viewModel: viewModel
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                        
+                        // Investments Section
+                        if expandedSections.contains(.investments) {
+                            AssetCategorySection(
+                                category: .investments,
+                                assets: viewModel.assets.filter { $0.category == .investments },
+                                viewModel: viewModel
+                            )
+                        }
+                        
+                        // Loans Section Header
+                        SectionHeaderButton(
+                            title: "Loans",
+                            isExpanded: expandedSections.contains(.loans),
+                            onToggle: { toggleSection(.loans) }
                         )
-                    }
-                    
-                    // Insurance Section
-                    if expandedSections.contains(.insurance) {
-                        AssetCategorySection(
-                            category: .insurance,
-                            assets: viewModel.assets.filter { $0.category == .insurance },
-                            viewModel: viewModel
+                        .padding(.horizontal)
+                        
+                        // Loans Section
+                        if expandedSections.contains(.loans) {
+                            AssetCategorySection(
+                                category: .loans,
+                                assets: viewModel.assets.filter { $0.category == .loans },
+                                viewModel: viewModel
+                            )
+                        }
+                        
+                        // Insurance Section Header
+                        SectionHeaderButton(
+                            title: "Insurance",
+                            isExpanded: expandedSections.contains(.insurance),
+                            onToggle: { toggleSection(.insurance) }
                         )
+                        .padding(.horizontal)
+                        
+                        // Insurance Section
+                        if expandedSections.contains(.insurance) {
+                            AssetCategorySection(
+                                category: .insurance,
+                                assets: viewModel.assets.filter { $0.category == .insurance },
+                                viewModel: viewModel
+                            )
+                        }
                     }
                 }
                 .padding(.bottom, 20)
@@ -117,104 +124,69 @@ struct InvestmentsView: View {
     }
 }
 
-struct NetWorthCard: View {
-    @ObservedObject var viewModel: BudgetViewModel
+// Reusing the exact same card design from Dashboard
+struct AssetSummaryCard: View {
+    let title: String
+    let value: Double
+    let iconName: String
+    let color: Color
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            HStack(spacing: 12) {
-                ZStack {
-                    Circle()
-                        .fill(Color.green.opacity(0.2))
-                        .frame(width: 50, height: 50)
-                    
-                    Image(systemName: "chart.bar.fill")
-                        .font(.system(size: 24, weight: .semibold))
-                        .foregroundStyle(.green)
-                }
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 6) {
+                Image(systemName: iconName)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(color)
                 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Net Worth")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(.secondary)
-                    
-                    Text("₹\(formatAmount(viewModel.netWorth))")
-                        .font(.system(size: 32, weight: .bold))
-                        .foregroundColor(.primary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.6)
-                }
-                
-                Spacer()
+                Text(title)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
             }
+            
+            Text("₹\(value, specifier: "%.0f")")
+                .font(.system(size: 28, weight: .semibold, design: .rounded))
+                .foregroundColor(.primary)
+                .frame(minWidth: 80, alignment: .leading)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
         }
-        .padding(20)
-        .frame(maxWidth: .infinity)
-        .background(Color(UIColor.secondarySystemGroupedBackground))
-        .cornerRadius(20)
-        .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.08), radius: 10, x: 0, y: 4)
-    }
-    
-    private func formatAmount(_ amount: Double) -> String {
-        if amount < 0 {
-            return "-\(Int(abs(amount)).formatted())"
-        }
-        return Int(amount).formatted()
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(Color(UIColor.secondarySystemGroupedBackground))
+        )
+        .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.3 : 0.05), radius: 8, x: 0, y: 2)
     }
 }
 
-struct CategorySummaryCard: View {
+struct SectionHeaderButton: View {
     let title: String
-    let amount: Double
-    let icon: String
-    let color: Color
     let isExpanded: Bool
     let onToggle: () -> Void
-    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        Button(action: onToggle) {
-            HStack(spacing: 16) {
-                ZStack {
-                    Circle()
-                        .fill(color.opacity(0.2))
-                        .frame(width: 50, height: 50)
-                    
-                    Image(systemName: icon)
-                        .font(.system(size: 24, weight: .semibold))
-                        .foregroundStyle(color)
-                }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(.primary)
-                    
-                    Text("₹\(formatAmount(amount))")
-                        .font(.system(size: 22, weight: .bold))
-                        .foregroundColor(color)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                }
+        Button(action: {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                onToggle()
+            }
+        }) {
+            HStack {
+                Text(title)
+                    .font(.title3)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
                 
                 Spacer()
                 
-                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                    .font(.system(size: 16, weight: .semibold))
+                Image(systemName: isExpanded ? "chevron.up.circle.fill" : "chevron.down.circle.fill")
+                    .font(.title3)
                     .foregroundColor(.secondary)
             }
-            .padding(20)
-            .frame(maxWidth: .infinity)
-            .background(Color(UIColor.secondarySystemGroupedBackground))
-            .cornerRadius(20)
-            .shadow(color: Color.black.opacity(colorScheme == .dark ? 0.2 : 0.06), radius: 8, x: 0, y: 3)
         }
         .buttonStyle(PlainButtonStyle())
-    }
-    
-    private func formatAmount(_ amount: Double) -> String {
-        Int(amount).formatted()
     }
 }
 
