@@ -105,8 +105,16 @@ struct CategoryDetailView: View {
                             .padding(.horizontal)
                         
                         ForEach(categoryAssets) { asset in
-                            AssetCard(asset: asset, viewModel: viewModel)
+                            if category == .loans {
+                                NavigationLink(destination: LoanDetailView(asset: asset, viewModel: viewModel)) {
+                                    AssetCard(asset: asset, viewModel: viewModel)
+                                }
+                                .buttonStyle(PlainButtonStyle())
                                 .padding(.horizontal)
+                            } else {
+                                AssetCard(asset: asset, viewModel: viewModel)
+                                    .padding(.horizontal)
+                            }
                         }
                     }
                 }

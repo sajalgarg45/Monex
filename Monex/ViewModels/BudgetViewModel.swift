@@ -229,6 +229,24 @@ class BudgetViewModel: ObservableObject {
         saveAssets()
     }
     
+    func recordEMIPayment(for asset: Asset, amount: Double, date: Date = Date(), notes: String = "") {
+        guard let index = assets.firstIndex(where: { $0.id == asset.id }),
+              var loanDetails = assets[index].loanDetails else { return }
+        
+        // Create EMI payment record
+        let payment = EMIPayment(amount: amount, paymentDate: date, notes: notes)
+        loanDetails.emiPayments.append(payment)
+        
+        // Reduce remaining amount
+        loanDetails.remainingAmount = max(0, loanDetails.remainingAmount - amount)
+        
+        // Update asset
+        assets[index].loanDetails = loanDetails
+        assets[index].amount = loanDetails.remainingAmount
+        
+        saveAssets()
+    }
+    
     var totalInvestments: Double {
         assets.filter { $0.category == .investments }.reduce(0) { $0 + $1.amount }
     }

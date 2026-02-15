@@ -119,6 +119,15 @@ struct LoanDetails: Codable {
     var startDate: Date
     var interestRate: Double
     var tenure: Int  // in months
+    var emiPayments: [EMIPayment] = []
+}
+
+// EMI Payment Record
+struct EMIPayment: Identifiable, Codable {
+    var id = UUID()
+    var amount: Double
+    var paymentDate: Date
+    var notes: String
 }
 
 // Insurance Details Structure

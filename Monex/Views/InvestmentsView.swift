@@ -47,7 +47,7 @@ struct InvestmentsView: View {
                             NavigationLink(destination: CategoryDetailView(category: .investments, viewModel: viewModel)) {
                                 CategoryNavigationCard(
                                     title: "Investments",
-                                    subtitle: "Mutual Funds, Stocks, Gold, FD",
+                                    subtitle: "Funds, Stocks, Gold, FD",
                                     icon: "arrow.up.right.circle.fill",
                                     color: .green
                                 )
@@ -56,7 +56,7 @@ struct InvestmentsView: View {
                             NavigationLink(destination: CategoryDetailView(category: .loans, viewModel: viewModel)) {
                                 CategoryNavigationCard(
                                     title: "Loans",
-                                    subtitle: "Home, Car, Education Loans",
+                                    subtitle: "Home, Car Loans",
                                     icon: "arrow.down.circle.fill",
                                     color: .red
                                 )

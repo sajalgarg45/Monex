@@ -190,6 +190,20 @@ struct AssetCard: View {
                         ProgressView(value: progress)
                             .tint(.green)
                     }
+                    
+                    // Tap hint for loan details
+                    HStack {
+                        Spacer()
+                        HStack(spacing: 4) {
+                            Text("View Payments")
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                            Image(systemName: "chevron.right")
+                                .font(.caption2)
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding(.top, 4)
                 }
             }
         }
